@@ -1,1 +1,1 @@
-Applications I have created while learning Python
+Project Repository For Python
