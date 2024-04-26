@@ -9,6 +9,11 @@ import matplotlib.pyplot as plt
 from datetime import datetime
 
 def readDataFromFile(csv):
+    """
+    Read data from historic stock files
+    Input: Csv filename
+    Returns: Date column, adj column
+    """
     file = pd.read_csv(csv, usecols=['Date', 'Adj Close'])
     date = file['Date']
     adj = file['Adj Close']
@@ -16,6 +21,11 @@ def readDataFromFile(csv):
 
 
 def find_AVGprice_for_each_month_and_day(dates, adjs):
+    """
+    Find avg price for each month and day for a stock
+    Input: Date column, adj column
+    Returns: month price dictionary, day price dictionary
+    """
     # First element in list = added adj values for the month and second value = number of tradining days in the month and third value = avg 
     month_price_dict = {'January':[0, 0, 0], 'February':[0, 0, 0], 'March':[0 ,0, 0], 'April':[0, 0, 0], 'May':[0, 0, 0], 'June':[0, 0, 0], 'July':[0, 0, 0], 'August':[0, 0, 0], 'September':[0, 0, 0], 'October':[0, 0, 0], 'November':[0, 0, 0], 'December':[0, 0, 0]}
     day_price_dict = {'Monday':[0, 0, 0], 'Tuesday':[0, 0, 0], 'Wednesday':[0, 0, 0], 'Thursday':[0, 0, 0], 'Friday':[0, 0, 0]}
@@ -40,6 +50,11 @@ def find_AVGprice_for_each_month_and_day(dates, adjs):
     
 
 def show_correlations_between_months(month_price_dict):
+    """
+    Show correlations between Months and adj price
+    Input: Month price dictionary
+    Returns: None
+    """
     title = 'Adjusted Closing Price as a Function of Month'
     month = list(month_price_dict.keys())
     avg = list()
@@ -50,6 +65,11 @@ def show_correlations_between_months(month_price_dict):
     plt.show()
 
 def show_correlations_between_days_of_month(day_price_dict):
+    """
+    Show correlations between weekdays and adj price
+    Input: Day price dictionary
+    Returns: None
+    """
     title = 'Adjusted Closing Price as a Function of Weekday'
     day = list(day_price_dict.keys())
     avg = list()
@@ -61,6 +81,11 @@ def show_correlations_between_days_of_month(day_price_dict):
 
 
 def main():
+    """
+    Main program function
+    Inputs: None
+    Returns: None
+    """
     date_AAPL, adj_AAPL = readDataFromFile('Stock Data/AAPL.csv')
     date_GOOGL, adj_GOOGL = readDataFromFile('Stock Data/GOOGL.csv')
     date_MSFT, adj_MSFT = readDataFromFile('Stock Data/MSFT.csv')
@@ -83,5 +108,6 @@ def main():
     show_correlations_between_days_of_month(day_dict_forMSFT)  # Peak at Wednesday
     show_correlations_between_days_of_month(day_dict_forSPOT)  # Inverse Relationship
     show_correlations_between_days_of_month(day_dict_forTSLA)  # Peak at Wednesday
+
 
 main()
