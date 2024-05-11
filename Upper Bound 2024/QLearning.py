@@ -4,8 +4,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 from IPython import display
 import pyvirtualdisplay
-from stable_baselines3 import DQN
-from stable_baselines3.dqn import MlpPolicy as DQNPolicy
 import matplotlib.collections as mc
 
 warnings.filterwarnings("ignore")
