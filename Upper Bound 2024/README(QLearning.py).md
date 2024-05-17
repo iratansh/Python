@@ -1,4 +1,4 @@
-References: https://github.com/udacity/deep-reinforcement-learning/blob/master/discretization/Discretization_Solution.ipynb, https://stable-baselines3.readthedocs.io/en/master/modules/ppo.html, https://www.youtube.com/watch?v=EUrWGTCGzlA&ab_channel=JohnnyCode
+References: https://github.com/udacity/deep-reinforcement-learning/blob/master/discretization/Discretization_Solution.ipynb, https://www.youtube.com/watch?v=EUrWGTCGzlA&ab_channel=JohnnyCode
 
 This program implements a Q-learning agent to navigate a reinforcement learning environment provided by the "PuddleWorld-v0" environment from the gymnasium library. 
 
