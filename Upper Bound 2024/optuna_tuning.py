@@ -25,13 +25,13 @@ class DiscretizedEnv(gym.Wrapper):
         self.state_grid = state_grid
 
     def reset(self, **kwargs):
-        obs = self.env.reset(**kwargs)
-        return discretize(obs, self.state_grid)
+        obs_tuple = self.env.reset(**kwargs)
+        obs = obs_tuple 
+        return discretize(obs[0], self.state_grid)
 
     def step(self, action):
-        observation, reward, done, trunc, info = self.env.step(action)
+        observation, reward, done, trunc, info  = self.env.step(action)
         return discretize(observation, self.state_grid), reward, done, trunc, info
-
 
 class TrialEvalCallback(EvalCallback):
     """Callback used for evaluating and reporting a trial."""
@@ -52,7 +52,7 @@ class TrialEvalCallback(EvalCallback):
         return True
 
 def discretize(sample, grid):
-    return [int(np.digitize(s, g)) for s, g in zip(sample, grid)]
+    return list(int(np.digitize(s, g)) for s, g in zip(sample, grid))
 
 def sample_ppo_params(trial):
     return {
@@ -96,7 +96,7 @@ def create_discretized_env():
 def objective(trial: optuna.Trial) -> float:
     time.sleep(random.random() * 16)
     env = create_discretized_env()
-    env = make_vec_env(env)
+    env = make_vec_env(lambda: env)
 
     sampled_hyperparams = sample_ppo_params(trial)
 
