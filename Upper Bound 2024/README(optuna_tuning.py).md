@@ -10,12 +10,12 @@ Optimization Process: The program utilizes Optuna's TPE sampler for Bayesian opt
 
 Visualization: After optimization, the program visualizes the optimization history, parameter importances, and parallel coordinates plot using Optuna's visualization tools.
 
-Technologies Used:
+This program essentially automates the process of finding the optimal hyperparameters for the PPO algorithm in the PuddleWorld environment, aiming to minimize the cumulative reward achieved during training.
 
+Technologies Used:
 Python Libraries: The program heavily relies on Python libraries such as Optuna, Stable Baselines3 (for PPO implementation), Gym (for reinforcement learning environments), Matplotlib (for visualization), and NumPy.
-Optuna: For hyperparameter optimization.
-Stable Baselines3: A library for reinforcement learning algorithms, here used for implementing the PPO algorithm.
-Gym: A toolkit for developing and comparing reinforcement learning algorithms.
-Matplotlib: For generating plots to visualize the optimization process.
-NumPy: For numerical computations and array operations.
-This program essentially automates the process of finding the optimal hyperparameters for the PPO algorithm in the PuddleWorld environment, aiming to maximize the cumulative reward achieved during training.
+*  Optuna: For hyperparameter optimization.
+*  Stable Baselines3: A library for reinforcement learning algorithms, here used for implementing the PPO algorithm.
+*  Gym: A toolkit for developing and comparing reinforcement learning algorithms.
+*  Matplotlib: For generating plots to visualize the optimization process.
+*  NumPy: For numerical computations and array operations.
