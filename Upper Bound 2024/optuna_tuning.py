@@ -7,14 +7,11 @@ import matplotlib.pyplot as plt
 from optuna.pruners import MedianPruner
 from optuna.samplers import TPESampler
 from stable_baselines3 import PPO
-from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.common.callbacks import EvalCallback, StopTrainingOnNoModelImprovement
 from stable_baselines3.common.env_util import make_vec_env
-from stable_baselines3.common.policies import ActorCriticPolicy
 import gymnasium as gym
 from optuna.visualization import plot_optimization_history, plot_param_importances, plot_parallel_coordinate
 import pickle as pkl
-from stable_baselines3.common.vec_env import DummyVecEnv
 
 study_path = "/Users/ishaanratanshi/Upper Bound/Tests"
 JSON_FILE = '/Users/ishaanratanshi/Upper Bound/gym-puddle/gym_puddle/env_configs/pw3.json'
