@@ -1,3 +1,5 @@
+References: https://github.com/CppMaster/SC2-AI/blob/master/minigames/move_to_beacon/src/optuna_search.py, https://github.com/optuna/optuna-examples/blob/main/rl/sb3_simple.py
+
 This program optimizes the parameters for a Proximal Policy Optimization (PPO) algorithm applied to a custom environment called PuddleWorld.
 
 Environment Setup: It defines a custom environment called PuddleWorld using parameters from a JSON file. This environment is then discretized using a grid.
