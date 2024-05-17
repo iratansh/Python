@@ -1,3 +1,5 @@
+References:  https://stable-baselines3.readthedocs.io/en/master/modules/ppo.html
+
 Overall, this program seems to be aimed at training and evaluating a PPO model on the PuddleWorld environment, with provisions for visualizing the training progress.
 1. **Environment Setup**: It initializes a custom environment called PuddleWorld using parameters from a JSON file.
 
