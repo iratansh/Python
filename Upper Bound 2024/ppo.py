@@ -14,6 +14,9 @@ from stable_baselines3.common.policies import ActorCriticPolicy
 JSON_FILE = '/Users/ishaanratanshi/Upper Bound/gym-puddle/gym_puddle/env_configs/pw3.json'
 
 class DiscretizedEnv(gym.Wrapper):
+    """
+    Convert an env with a continuous state space to a discretized environment 
+    """
     def __init__(self, env, state_grid):
         super().__init__(env)
         self.state_grid = state_grid
@@ -27,11 +30,20 @@ class DiscretizedEnv(gym.Wrapper):
         observation, reward, done, trunc, info  = self.env.step(action)
         return discretize(observation, self.state_grid), reward, done, trunc, info
 
-
 def discretize(sample, grid):
+    """
+    Discretize a sample from given grid
+    Input: sample, grid
+    Returns: discretization (list)
+    """
     return list(int(np.digitize(s, g)) for s, g in zip(sample, grid))
 
 def plot_rewards(rewards):
+    """
+    Visualize rewards over episodes
+    Input: rewards (list)
+    Returns: None
+    """
     plt.plot(rewards)
     plt.xlabel('Episode')
     plt.ylabel('Total Reward')
@@ -39,6 +51,11 @@ def plot_rewards(rewards):
     plt.show()
 
 def test_model(model, env, num_episodes):
+    """
+    Test model and run the plot_rewards function
+    Inputs: model, env, num_episodes
+    Returns: None
+    """
     episode_rewards = []
     for _ in range(num_episodes):
         obs = env.reset()
@@ -52,24 +69,12 @@ def test_model(model, env, num_episodes):
         episode_rewards.append(total_reward)
     plot_rewards(episode_rewards)
 
-def visualize(frames, video_name = "video.mp4"):
-    # Saves the frames as an mp4 video using cv2
-    video_path = video_name
-    height, width, _ = frames[0].shape
-    fourcc = cv2.VideoWriter_fourcc(*"mp4v")
-    video_writer = cv2.VideoWriter(video_path, fourcc, 30, (width, height))
-    for frame in frames:
-        video_writer.write(frame)
-    video_writer.release()
-
-def prepare_display():
-    # Prepares display for online rendering of the frames in the game0
-    _display = pyvirtualdisplay.Display(visible=False,size=(1400, 900))
-    _ = _display.start()
-    fig, ax = plt.subplots(figsize=(5, 5))
-    ax.axis('off')
-
 def create_uniform_grid(low, high, bins=(60, 60)):
+    """
+    Define a uniformly-spaced grid that can be used to discretize a space.
+    Input: low, high, bins (tuple)
+    Returns: grid
+    """
     grid = [np.linspace(low[dim], high[dim], bins[dim] + 1)[1:-1] for dim in range(len(bins))]
     print("Uniform grid: [<low>, <high>] / <bins> => <splits>")
     for l, h, b, splits in zip(low, high, bins, grid):
@@ -77,6 +82,9 @@ def create_uniform_grid(low, high, bins=(60, 60)):
     return grid
 
 def main():
+    """
+    Main program function
+    """
     with open(JSON_FILE) as f:
         env_setup = json.load(f)
 
