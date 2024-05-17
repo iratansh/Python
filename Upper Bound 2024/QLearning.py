@@ -1,3 +1,7 @@
+"""
+Q-Learning for Puddleworld environment
+"""
+
 import gymnasium as gym
 import gym_puddle, json, time, cv2, random, warnings, sys
 import matplotlib.pyplot as plt
@@ -18,6 +22,9 @@ LEARNING_RATE = 0.02
 GAMMA = 0.99
 
 class QLearningAgent:
+    """
+    Simple QLearningAgent class for reinforcement learning
+    """
     def __init__(self,
                 env, 
                 state_grid, 
@@ -45,31 +52,37 @@ class QLearningAgent:
     def preprocess_state(self, state):
         """
         Map a continuous state to its discretized representation
+        Input: State
+        Returns: discretized state grid tuple
         """
         return tuple(discretize(state, self.state_grid))
 
     def reset_episode(self, state):
         """
         Reset variables for a new episode
+        Input: state
+        Returns: last action of agent
         """
         # Gradually decrease exploration rate
         self.epsilon *= self.epsilon_decay_rate
         self.epsilon = max(self.epsilon, self.min_epsilon)
-
-        # Decide initial action
         self.last_state = self.preprocess_state(state)
         self.last_action = np.argmax(self.q_table[self.last_state])
         return self.last_action
     
     def reset_exploration(self, epsilon=None):
         """
-        Reset exploration rate used when training.
+        Reset exploration rate 
+        Input: Epsilon
+        Returns: None
         """
         self.epsilon = epsilon if epsilon is not None else self.initial_epsilon
 
     def act(self, state, reward=None, done=None, mode='train'):
         """
         Pick next action and update internal Q table (when mode != 'test')
+        Inputs: state, reward, done, mode
+        Returns: last action
         """
         state = self.preprocess_state(state)
         if mode == 'test':
@@ -90,10 +103,11 @@ class QLearningAgent:
         self.last_action = action
         return action
 
-# some functions to help the visualization and interaction with the environment
 def visualize(frames, video_name = "video.mp4"):
     """
     visualize environement
+    Input: video name
+    Returns: None
     """
     # Saves the frames as an mp4 video using cv2
     video_path = video_name
@@ -107,6 +121,8 @@ def visualize(frames, video_name = "video.mp4"):
 def prepare_display():
     """
     Prepares display for online rendering of the frames in the game
+    Input: None
+    Returns: None
     """
     _display = pyvirtualdisplay.Display(visible=False,size=(1400, 900))
     _ = _display.start()
@@ -116,6 +132,8 @@ def prepare_display():
 def create_uniform_grid(low, high, bins=(20, 20)):
     """
     Define a uniformly-spaced grid that can be used to discretize a space.
+    Input: low, high, bins (tuple)
+    Returns: grid
     """
     grid = [np.linspace(low[dim], high[dim], bins[dim] + 1)[1:-1] for dim in range(len(bins))]
     print("Uniform grid: [<low>, <high>] / <bins> => <splits>")
@@ -125,7 +143,9 @@ def create_uniform_grid(low, high, bins=(20, 20)):
 
 def discretize(sample, grid):
     """
-    Discretize a sample as per given grid.
+    Discretize a sample from given grid
+    Input: sample, grid
+    Returns: discretization (list)
     """
     return list(int(np.digitize(s, g)) for s, g in zip(sample, grid))
 
@@ -133,23 +153,22 @@ def discretize(sample, grid):
 def visualize_samples(samples, discretized_samples, grid, low=None, high=None):
     """
     Visualize original and discretized samples on a given 2-dimensional grid using matplotlib
+    Input: samples, discretized samples, grid, low, high
+    Returns: None
     """
     fig, ax = plt.subplots(figsize=(10, 10))
     ax.xaxis.set_major_locator(plt.FixedLocator(grid[0]))
     ax.yaxis.set_major_locator(plt.FixedLocator(grid[1]))
     ax.grid(True)
-    
-    # If bounds (low, high) are specified, use them to set axis limits
+
     if low is not None and high is not None:
         ax.set_xlim(low[0], high[0])
         ax.set_ylim(low[1], high[1])
     else:
-        # Otherwise use first, last grid locations as low, high (for further mapping discretized samples)
         low = [splits[0] for splits in grid]
         high = [splits[-1] for splits in grid]
 
-    # Map each discretized sample (which is really an index) to the center of corresponding grid cell
-    grid_extended = np.hstack((np.array([low]).T, grid, np.array([high]).T))  # add low and high ends
+    grid_extended = np.hstack((np.array([low]).T, grid, np.array([high]).T))  
     grid_centers = (grid_extended[:, 1:] + grid_extended[:, :-1]) / 2 
     locs = np.stack([grid_centers[i, discretized_samples[:, i]] for i in range(len(grid))]).T  # map discretized samples
     ax.plot(samples[:, 0], samples[:, 1], 'o')  # plot original samples
@@ -160,7 +179,11 @@ def visualize_samples(samples, discretized_samples, grid, low=None, high=None):
 
     
 def run(agent, env, num_episodes=NUM_EPISODES, mode='test'):
-    """Run agent in given reinforcement learning environment and return scores."""
+    """
+    Run agent in given reinforcement learning environment
+    Input: agent, env, num_episodes, mode
+    Returns: scores
+    """
     scores = []
     max_avg_score = -np.inf
     for i_episode in range(1, num_episodes+1):
@@ -195,6 +218,9 @@ def run(agent, env, num_episodes=NUM_EPISODES, mode='test'):
 
 
 def main():
+    ""
+    Main program function
+    ""
     with open(JSON_FILE) as f:
         env_setup = json.load(f)
 
