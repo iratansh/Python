@@ -51,25 +51,23 @@ class TrialEvalCallback(EvalCallback):
 def discretize(sample, grid):
     return list(int(np.digitize(s, g)) for s, g in zip(sample, grid))
 
-def sample_ppo_params(trial):
+def ppo_params(trial):
     return {
-        'n_steps': trial.suggest_int('n_steps', 2048, 8192),
+        'n_steps': trial.suggest_int('n_steps', 16, 2048),
         'gamma': trial.suggest_float('gamma', 0.9, 0.9999, log=True),
         'learning_rate': trial.suggest_float('learning_rate', 1e-5, 1, log=True),
         'ent_coef': trial.suggest_float('ent_coef', 1e-8, 0.1, log=True),
         'clip_range': trial.suggest_float('clip_range', 0.1, 0.4),
-        'n_epochs': trial.suggest_int('n_epochs', 1, 48),
         'gae_lambda': trial.suggest_float('gae_lambda', 0.8, 1.0),
-        'max_grad_norm': trial.suggest_float('max_grad_norm', 0.3, 5.0)
+        'max_grad_norm': trial.suggest_float('max_grad_norm', 0.3, 5.0),
     }
-
 
 def create_uniform_grid(low, high, bins=(60, 60)):
     grid = [np.linspace(low[dim], high[dim], bins[dim] + 1)[1:-1] for dim in range(len(bins))]
     print("Uniform grid: [<low>, <high>] / <bins> => <splits>")
     for l, h, b, splits in zip(low, high, bins, grid):
         print("    [{}, {}] / {} => {}".format(l, h, b, splits))
-    return grid
+    return grid 
 
 def create_discretized_env():
     with open(JSON_FILE) as f:
@@ -95,12 +93,12 @@ def objective(trial: optuna.Trial) -> float:
     env = create_discretized_env()
     env = make_vec_env(lambda: env)
 
-    sampled_hyperparams = sample_ppo_params(trial)
+    sampled_hyperparams = ppo_params(trial)
 
     path = f"{study_path}/trial_{str(trial.number)}"
     os.makedirs(path, exist_ok=True)
 
-    model = PPO("MlpPolicy", env=env, seed=None, verbose=0, tensorboard_log=path, **sampled_hyperparams)
+    model = PPO("MlpPolicy", env=env, seed=None, verbose=0, tensorboard_log=path, **sampled_hyperparams, batch_size=64)
 
     stop_callback = StopTrainingOnNoModelImprovement(max_no_improvement_evals=30, min_evals=50, verbose=1)
     eval_callback = TrialEvalCallback(
@@ -113,7 +111,7 @@ def objective(trial: optuna.Trial) -> float:
         f.write(str(params))
 
     try:
-        model.learn(10000000, callback=eval_callback)
+        model.learn(int(2e7), callback=eval_callback)
     except (AssertionError, ValueError) as e:
         print(e)
         print("============")
@@ -125,7 +123,6 @@ def objective(trial: optuna.Trial) -> float:
 
     is_pruned = eval_callback.is_pruned
     reward = eval_callback.best_mean_reward
-
     del model.env
     del model
 
@@ -142,7 +139,7 @@ if __name__ == "__main__":
         sampler=sampler,
         pruner=pruner,
         load_if_exists=True,
-        direction="maximize",
+        direction="minimize",
     )
 
     try:
@@ -159,9 +156,7 @@ if __name__ == "__main__":
     print("Params: ")
     for key, value in trial.params.items():
         print(f"    {key}: {value}")
-
     study.trials_dataframe().to_csv(f"{study_path}/report.csv")
-
     with open(f"{study_path}/study.pkl", "wb+") as f:
         pkl.dump(study, f)
 
@@ -169,11 +164,9 @@ if __name__ == "__main__":
         fig1 = plot_optimization_history(study)
         fig2 = plot_param_importances(study)
         fig3 = plot_parallel_coordinate(study)
-
         fig1.show()
         fig2.show()
         fig3.show()
-
     except (ValueError, ImportError, RuntimeError) as e:
         print("Error during plotting")
         print(e)
