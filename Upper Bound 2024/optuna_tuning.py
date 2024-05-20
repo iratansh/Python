@@ -92,7 +92,6 @@ def objective(trial: optuna.Trial) -> float:
     time.sleep(random.random() * 16)
     env = create_discretized_env()
     env = make_vec_env(lambda: env)
-
     sampled_hyperparams = ppo_params(trial)
 
     path = f"{study_path}/trial_{str(trial.number)}"
@@ -146,13 +145,11 @@ if __name__ == "__main__":
         study.optimize(objective, n_jobs=4, n_trials=128)
     except KeyboardInterrupt:
         pass
-
     print("Number of finished trials: ", len(study.trials))
 
     trial = study.best_trial
     print(f"Best trial: {trial.number}")
     print("Value: ", trial.value)
-
     print("Params: ")
     for key, value in trial.params.items():
         print(f"    {key}: {value}")
@@ -162,11 +159,11 @@ if __name__ == "__main__":
 
     try:
         fig1 = plot_optimization_history(study)
+        plt.show()
         fig2 = plot_param_importances(study)
+        plt.show()
         fig3 = plot_parallel_coordinate(study)
-        fig1.show()
-        fig2.show()
-        fig3.show()
+        plt.show()
     except (ValueError, ImportError, RuntimeError) as e:
         print("Error during plotting")
         print(e)
