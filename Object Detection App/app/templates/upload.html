@@ -85,9 +85,7 @@
 <body>
     
     <div class="row">
-        <!-- Left Column for Upload -->
         <div class="col-md-6">
-            <!-- Your existing upload container code here -->
             <div class="container">
                 <h1 style="margin-top: 0px;">Object Detection Project</h1>   
                 <form action="/" method="post" enctype="multipart/form-data" class="form-group">
@@ -99,7 +97,6 @@
             </div>
         </div>
 
-        <!-- Right Column for Chatbox -->
         <div class="col-md-6">
             <div class="chat-container">
                 <div id="chatbox" class="chatbox">
@@ -112,7 +109,7 @@
 
 
     <script>
-        let chatHistory = ''; // Variable to store chat history
+        let chatHistory = ''; 
 
         function recieveMessage() {
             fetch('/chat', {
@@ -128,8 +125,8 @@
                 const botReply = data.reply || '';
                 console.log(botReply)
                 if (botReply !== '') {
-                    chatHistory += '<div class="message">Detected Objects: ' + detectedObjects + '<br> Response: ' + botReply + '</div>'; // Update chat history
-                    document.getElementById("chatbox").innerHTML = chatHistory; // Update chatbox
+                    chatHistory += '<div class="message">Detected Objects: ' + detectedObjects + '<br> Response: ' + botReply + '</div>'; 
+                    document.getElementById("chatbox").innerHTML = chatHistory;
                 } else {
                     console.error('No bot reply received.');
                 }
