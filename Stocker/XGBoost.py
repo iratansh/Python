@@ -12,10 +12,22 @@ import torch
 import torch.nn as nn
 from sklearn.preprocessing import MinMaxScaler
 from torch.utils.data import Dataset, DataLoader
+import math
+from sklearn.metrics import mean_squared_error
 
 DEVICE = 'cuda:0' if torch.cuda.is_available() else 'cpu'
 BATCH_SIZE = 16
 LEARNING_RATE = 0.001
+N_ESTIMATORS = 100  # Number of estimators
+MAX_DEPTH = 3  # Max Tree depth 
+MIN_CHILD_WEIGHT = 1  # Minimum sum of instance weight
+SUBSAMPLE = 1  # Subsample ratio of training instance
+COLSAMPLE_BYTREE = 1  # Subsample ratio of coulumns when contructing each tree
+COLSAMPLE_BYLEVEL = 1  # Subsample ratio of columns for each split in each level
+GAMMA = 0  # Minimum loss reduction required to make further partition on a leaf node of the tree
+MODEL_SEED = 100
+FONTSIZE = 14
+TICKLABELSIZE = 14
 NUM_EPOCHS = 10
 
 class TimeSeriesDataset(Dataset):
@@ -95,13 +107,11 @@ def loaders(train_dataset, test_dataset):
     test_loader = DataLoader(test_dataset, batch_size=BATCH_SIZE, shuffle=False)
     return train_loader, test_loader
 
-def train_one_epoch(model, train_loader, epoch):
+def train_one_epoch(model, train_loader, epoch, optimizer, loss_function):
     model.train(True)
     print(f'Epoch: {epoch + 1}')
     running_loss = 0.0
-    loss_function = nn.MSELoss()
-    optimizer = torch.optim.Adam(model.parameters(), LEARNING_RATE)
-
+    
     for batch_index, batch in enumerate(train_loader):
         x_batch, y_batch = batch[0].to(DEVICE), batch[1].to(DEVICE)
         output = model(x_batch)
@@ -118,13 +128,12 @@ def train_one_epoch(model, train_loader, epoch):
             running_loss = 0.0
     print()
 
-def validate_one_epoch(model, test_loader):
+def validate_one_epoch(model, test_loader, loss_function):
     model.train(False)
     running_loss = 0.0
-    loss_function = nn.MSELoss()
 
     for batch_index, batch in enumerate(test_loader):
-        x_batch, y_batch = batch[0].to(DEVICE)
+        x_batch, y_batch = batch[0].to(DEVICE), batch[1].to(DEVICE)
 
         with torch.no_grad():
             output = model(x_batch)
@@ -133,7 +142,38 @@ def validate_one_epoch(model, test_loader):
     
     avg_loss_across_batches = running_loss / len(test_loader)
     print('Val Loss: {0:.3f}'.format(avg_loss_across_batches))
+    print('*'*20)
     print()
+
+def mape(y_true, y_pred): 
+    """
+    Compute mean absolute percentage error 
+    Input: y_true, y_pred
+    Returns: mape
+    """
+    y_true, y_pred = np.array(y_true), np.array(y_pred)
+    return np.mean(np.abs((y_true - y_pred) / y_true)) * 100
+
+def train_pred_eval_model(X_train_scaled, y_train_scaled, X_test_scaled, y_test, col_mean, col_std, seed=100, n_estimators=100, max_depth=3, learning_rate=0.1, min_child_weight=1, subsample=1, colsample_bytree=1, colsample_bylevel=1, gamma=0):
+    """
+    Train model, do prediction, scale back to original range and do evaluation
+    Inputs: X_train_scaled, y_train_scaled, X_test_scaled, y_test, col_mean, col_std, seed, n_estimators, max_depth, learning_rate, min_child_weight, subsample, colsample_bytree, colsample_bylevel, gamma            
+    Returns: rmse, mape, est
+    """
+    model = XGBRegressor(seed=MODEL_SEED, n_estimators=N_ESTIMATORS, max_depth=MAX_DEPTH, learning_rate=LEARNING_RATE, min_child_weight=MIN_CHILD_WEIGHT, subsample=SUBSAMPLE, colsample_bytree=COLSAMPLE_BYTREE, colsample_bylevel=COLSAMPLE_BYLEVEL, gamma=GAMMA)
+    # Train the model
+    model.fit(X_train_scaled, y_train_scaled)
+    est_scaled = model.predict(X_test_scaled)
+    est = est_scaled * col_std + col_mean
+
+    # Calculate RMSE
+    rmse = math.sqrt(mean_squared_error(y_test, est))
+    mape = mape(y_test, est)
+    
+    return rmse, mape, est
+
+def plot():
+    pass
 
 def main():
     df = readDataFromFile('Stock Data/AAPL.csv')
@@ -148,21 +188,15 @@ def main():
     train_dataset = TimeSeriesDataset(X_train, y_train)
     test_dataset = TimeSeriesDataset(X_test, y_test)
     train_loader, test_loader = loaders(train_dataset, test_dataset)
-
-
-    for _, batch in enumerate(train_loader):
-        x_batch, y_batch = batch[0].to(DEVICE), batch[1].to(DEVICE)
-        break
     model = LSTM(1, 4, 1)
     model.to(DEVICE)
+    optimizer = torch.optim.Adam(model.parameters(), LEARNING_RATE)
+    loss_function = nn.MSELoss()
 
     for epoch in range(NUM_EPOCHS):
-        train_one_epoch(model, train_loader, epoch)
-        validate_one_epoch(model, test_loader)
-    # print(model)
+        train_one_epoch(model, train_loader, epoch, optimizer, loss_function)
+        validate_one_epoch(model, test_loader, loss_function)
 
-    # print(X_train.shape, X_test.shape, y_train.shape, y_test.shape)
-    # print(train_dataset)
 
 if __name__ == "__main__":
     main()
