@@ -18,7 +18,7 @@ from sklearn.metrics import mean_squared_error
 DEVICE = 'cuda:0' if torch.cuda.is_available() else 'cpu'
 BATCH_SIZE = 16
 LEARNING_RATE = 0.001
-N_ESTIMATORS = 100  # Number of estimators
+N_ESTIMATORS = 100  
 MAX_DEPTH = 3  # Max Tree depth 
 MIN_CHILD_WEIGHT = 1  # Minimum sum of instance weight
 SUBSAMPLE = 1  # Subsample ratio of training instance
