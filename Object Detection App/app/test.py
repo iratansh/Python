@@ -77,14 +77,14 @@ def upload():
         filename = secure_filename(file.filename)
         image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(image_path)
-        detected_objects = process_image_with_yolo(image_path)  # Update the global variable
+        detected_objects = process_image_with_yolo(image_path)
         return jsonify({'Detected objects': detected_objects})
 
     elif file_extension in ALLOWED_VIDEO_EXTENSIONS:
         filename = secure_filename(file.filename)
         video_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(video_path)
-        detected_objects = process_video_with_yolo(video_path)  # Update the global variable
+        detected_objects = process_video_with_yolo(video_path)  
 
         try:
             gpt_input = "Detected objects: " + ", ".join(detected_objects)
