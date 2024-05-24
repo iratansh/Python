@@ -40,7 +40,7 @@ def process_dataframe(df, n_steps):
     df = df.copy()
     df.set_index('Date', inplace=True)
     for i in range(1, n_steps + 1):
-        df[f'Adj Close(t-{i})'] = df['Adj Close'].shift(i)
+        df[f'Close(t-{i})'] = df['Adj Close'].shift(i)
     df.dropna(inplace=True)
     return df
 
@@ -50,9 +50,15 @@ def scale_dataframe(df):
     Inputs: df
     Returns: df_scaled, scaler
     """
-    scaler = MinMaxScaler(feature_range=(-1, 1))
-    df_scaled = scaler.fit_transform(df)
-    return df_scaled, scaler
+    feature_cols = df.columns[1:]
+    target_col = df.columns[0]
+    scaler_features = MinMaxScaler(feature_range=(-1, 1))
+    scaler_target = MinMaxScaler(feature_range=(-1, 1))
+
+    df_features_scaled = scaler_features.fit_transform(df[feature_cols])
+    df_target_scaled = scaler_target.fit_transform(df[[target_col]])
+    df_scaled = np.hstack([df_target_scaled, df_features_scaled])
+    return df_scaled, scaler_features, scaler_target
 
 def split_data(scaled_data):
     """
@@ -60,8 +66,8 @@ def split_data(scaled_data):
     Inputs: scaled_data
     Returns: X, y
     """
-    X = scaled_data[:, 1:] 
-    y = scaled_data[:, 0]   
+    X = scaled_data[:, 1:]  
+    y = scaled_data[:, 0]  
     return X, y
 
 def split_data_into_train_test(X, y, split_ratio=0.95):
@@ -96,6 +102,7 @@ def train_and_evaluate(X_train, y_train, X_test, y_test):
     mape_value = mean_absolute_percentage_error(y_test, y_pred)
     return model, rmse, mape_value, y_test, y_pred
 
+
 def plot_results(y_test, y_pred):
     """
     Plot results
@@ -120,27 +127,27 @@ def save_predictions(y_test, y_pred):
     df = pd.DataFrame({'True Values': y_test, 'Predictions': y_pred})
     df.to_csv('predictions.csv', index=False)
 
-def predict_next_day_close(model, df, scaler, n_steps):
+def predict_next_day_close(model, df, scaler_features, scaler_target, n_steps):
     """
     Predict the next days Adj close
     Inputs: model, df, scaler, n_steps
     Returns: next_day_price
     """
     last_n_days = df['Adj Close'].values[-n_steps:]
-    last_n_days_scaled = scaler.transform(last_n_days.reshape(-1, 1)).flatten()
-
-    X_new = last_n_days_scaled[::-1].reshape(1, -1) 
-    next_day_scaled = model.predict(X_new)
-    next_day_price = scaler.inverse_transform(next_day_scaled.reshape(-1, 1)).flatten()[0]
+    last_n_days_df = pd.DataFrame([last_n_days], columns=[f'Close(t-{i})' for i in range(n_steps, 0, -1)])
+    last_n_days_df = last_n_days_df[scaler_features.feature_names_in_]
+    last_n_days_scaled = scaler_features.transform(last_n_days_df)
+    next_day_scaled = model.predict(last_n_days_scaled)  # Predict the next day's closing price in the scaled range
+    next_day_price = scaler_target.inverse_transform(next_day_scaled.reshape(-1, 1)).flatten()[0] # Inverse transform to get the actual price
     return next_day_price
 
 def main():
     """
     Main program function
     """
-    df = read_data_from_file('Stock Data/AAPL.csv')  # Testing with AAPL stock history
+    df = read_data_from_file('Stock Data/AAPL.csv')
     processed_df = process_dataframe(df, N_STEPS)
-    scaled_data, scaler = scale_dataframe(processed_df)
+    scaled_data, scaler_features, scaler_target = scale_dataframe(processed_df)
     X, y = split_data(scaled_data)
     X_train, X_test, y_train, y_test = split_data_into_train_test(X, y)
     model, rmse, mape_value, y_test, y_pred = train_and_evaluate(X_train, y_train, X_test, y_test)
@@ -148,9 +155,13 @@ def main():
     print(f'XGBoost MAPE: {mape_value}%')
     plot_results(y_test, y_pred)
     save_predictions(y_test, y_pred)
+    
+    next_day_price = predict_next_day_close(model, df, scaler_features, scaler_target, N_STEPS)
+    print(f'Predicted next day adj closing price: {next_day_price}')
 
-    next_day_price = predict_next_day_close(model, df, scaler, N_STEPS)
-    print(f'Predicted next day closing price: {next_day_price}')
+if __name__ == "__main__":
+    main()
+
 
 if __name__ == "__main__":
     main()
