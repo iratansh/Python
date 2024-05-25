@@ -1,3 +1,5 @@
+Citations: https://forecastegy.com/posts/xgboost-hyperparameter-tuning-with-optuna/
+
 This code uses the XGBoost machine learning algorithm to predict stock market prices. It includes steps for reading and processing historical stock data, scaling the data, and training the model. Additionally, it uses Optuna to optimize hyperparameters for the XGBoost model, enhancing its prediction accuracy. By integrating Optuna for hyperparameter optimization, the code aims to improve the prediction accuracy of the XGBoost model for stock market prices.
 
 Technologies Used:
