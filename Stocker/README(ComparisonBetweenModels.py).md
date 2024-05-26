@@ -5,7 +5,7 @@ Results (Stock == AAPL from April 24, 2024 - May 2, 2024):
 * XGBoost: Predicted next week adj closing prices: [163.73656, 163.65869, 165.00328, 164.54767, 163.89056, 162.7681, 162.00394]
 * Averaged BNN and XGBoost: Predicted next week adj closing prices: [171.019195, 171.118515, 172.53339, 173.676425, 172.43163, 172.514575, 173.209655]
 
-Analysis
+Analysis:
 
 Bayesian Neural Network (BNN)
 * Strengths: Captures broader trends and is responsive to changes in stock prices.
