@@ -1,5 +1,3 @@
-Stock market prediction Full-stack application. W.I.P
-
 Results (Stock == AAPL from April 24, 2024 - May 2, 2024):
 
 * Actual: Predicted next week adjusted closing prices: [168.79, 169.66, 169.07, 173.26, 170.10, 169.07, 172.80]
