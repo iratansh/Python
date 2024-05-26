@@ -4,7 +4,6 @@ Includes Optuna Hyperparamater Optimization
 STOCKS = AAPL, MSFT, SPOT, TSLA, VTI, GOOGL
 """
 
-from datetime import date, timedelta, datetime
 from xgboost import XGBRegressor
 import pandas as pd
 import numpy as np
