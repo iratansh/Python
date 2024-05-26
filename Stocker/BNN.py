@@ -1,5 +1,7 @@
 """
 BNN for Stock Prediction
+Includes Optuna Hyperparamater Optimization
+STOCKS = AAPL, MSFT, SPOT, TSLA, VTI, GOOGL
 """
 
 import torch
