@@ -1,3 +1,7 @@
+"""
+BNN for Stock Prediction
+"""
+
 import torch
 import torch.nn as nn
 import pyro
@@ -12,6 +16,9 @@ import matplotlib.pyplot as plt
 import optuna
 
 class BNN(PyroModule):
+    """
+    BNN class
+    """
     def __init__(self, in_dim=7, out_dim=1, hid_dim=10, prior_scale=10):
         super().__init__()
         self.activation = nn.Tanh()
@@ -32,6 +39,9 @@ class BNN(PyroModule):
         return mu
 
 class StockPredictor:
+    """
+    Stock Predictor Class
+    """
     def __init__(self, csv_file, n_steps=7):
         self.n_steps = n_steps
         self.df = self.read_data_from_file(csv_file)
@@ -46,12 +56,22 @@ class StockPredictor:
         self.y_test_tensor = torch.tensor(self.y_test, dtype=torch.float32)
 
     def read_data_from_file(self, csv):
+        """
+        Read stockdata from csv
+        Input: csv 
+        Returns: df
+        """
         df = pd.read_csv(csv, usecols=['Date', 'Adj Close'])
         df['Date'] = pd.to_datetime(df['Date'])
         df.sort_values('Date', inplace=True)
         return df
 
     def process_dataframe(self, df, n_steps):
+        """
+        Process dataframe
+        Inputs: df, n_steps
+        Returns: df
+        """
         df = df.copy()
         df.set_index('Date', inplace=True)
         for i in range(1, n_steps + 1):
@@ -60,6 +80,11 @@ class StockPredictor:
         return df
 
     def scale_dataframe(self, df):
+        """
+        Scale dataframe
+        Inputs: df
+        Returns: df_scaled
+        """
         feature_cols = df.columns[1:]  # All columns except the target
         target_col = df.columns[0]  # The first column is the target
         df_features_scaled = self.scaler_features.fit_transform(df[feature_cols])
@@ -68,21 +93,41 @@ class StockPredictor:
         return df_scaled
 
     def split_data(self, scaled_data):
+        """
+        Split data into X and y
+        Inputs: scaled_data
+        Returns: X, y
+        """
         X = scaled_data[:, 1:]  # All columns except the first one (target)
         y = scaled_data[:, 0]  # First column is the target
         return X, y
 
     def split_data_into_train_test(self, X, y, split_ratio=0.95):
+        """
+        Split data into train and test datasets
+        Inputs: X, y, split_ratio
+        Returns: X_train, X_test, y_train, y_test
+        """
         split_index = int(len(X) * split_ratio)
         X_train, X_test = X[:split_index], X[split_index:]
         y_train, y_test = y[:split_index], y[split_index:]
         return X_train, X_test, y_train, y_test
 
     def get_guide(self, model):
+        """
+        Get guide
+        Inputs: model
+        Returns: guide
+        """
         guide = pyro.infer.autoguide.AutoDiagonalNormal(model)
         return guide
 
     def train(self, model, guide, num_iterations=1000, lr=0.01):
+        """
+        Train model
+        Inputs: model, guide, num_iterations, lr
+        Returns: svi
+        """
         pyro.clear_param_store()
         svi = SVI(model, guide, Adam({"lr": lr}), loss=Trace_ELBO())
         for epoch in range(num_iterations):
@@ -92,6 +137,11 @@ class StockPredictor:
         return svi
 
     def predict(self, model, guide, X):
+        """
+        Predict
+        Inputs: model, guide, X
+        Returns: y_pred_mean, y_pred_std
+        """
         predictive = pyro.infer.Predictive(model, guide=guide, num_samples=1000, return_sites=("obs", "_RETURN"))
         samples = predictive(X)
         y_pred_samples = samples["_RETURN"].detach().numpy()
@@ -100,6 +150,11 @@ class StockPredictor:
         return y_pred_mean, y_pred_std
 
     def plot_results(self, y_test, y_pred_mean, y_pred_std):
+        """
+        Plot results
+        Inputs: y_test, y_pred_mean, y_pred_std
+        Returns: None
+        """
         plt.figure(figsize=(10, 6))
         plt.plot(y_test, label='True Values', color='blue')
         plt.plot(y_pred_mean, label='Predictions', color='red')
@@ -107,7 +162,6 @@ class StockPredictor:
         lower_bound = y_pred_mean - 2 * y_pred_std
         upper_bound = y_pred_mean + 2 * y_pred_std
         plt.fill_between(range(len(y_pred_mean)), lower_bound, upper_bound, color='red', alpha=0.3)
-
         plt.title('Stock Price Prediction')
         plt.xlabel('Time')
         plt.ylabel('Stock Price')
@@ -115,6 +169,11 @@ class StockPredictor:
         plt.show()
 
     def predict_next_day_close(self, model, guide):
+        """
+        Predict adj close for the next trading day
+        Inputs: model, guide
+        Returns: next_day_price
+        """
         last_n_days = self.df['Adj Close'].values[-self.n_steps:]
         last_n_days_scaled = self.scaler_features.transform(last_n_days.reshape(1, -1))
         last_n_days_tensor = torch.tensor(last_n_days_scaled, dtype=torch.float32)
@@ -123,6 +182,11 @@ class StockPredictor:
         return next_day_price
 
     def predict_next_week_close(self, model, guide):
+        """
+        Predict adj close for the next week
+        Inputs: model, guide
+        Returns: next_week_predictions
+        """
         last_n_days = self.df['Adj Close'].values[-self.n_steps:]
         next_week_predictions = []
 
@@ -137,28 +201,30 @@ class StockPredictor:
         return next_week_predictions
 
 def objective(trial, stock_predictor):
+    """
+    Optuna hyperparamter tuning
+    Inputs: trial, stock_predictor
+    Returns: rmse.item()
+    """
     # Define the hyperparameters to tune
     hid_dim = trial.suggest_int('hid_dim', 5, 50)
     prior_scale = trial.suggest_float('prior_scale', 1.0, 20.0)
     lr = trial.suggest_loguniform('lr', 1e-4, 1e-2)
 
-    # Initialize the model and other components
     model = BNN(in_dim=7, hid_dim=hid_dim, prior_scale=prior_scale)
     guide = stock_predictor.get_guide(model)
-    
-    # Train the model
     stock_predictor.train(model, guide, num_iterations=1000, lr=lr)
     
     # Evaluate the model on the validation set
     y_pred_mean, _ = stock_predictor.predict(model, guide, stock_predictor.X_test_tensor)
     y_pred_mean = torch.tensor(y_pred_mean)
-    
-    # Compute the RMSE on the validation set
     rmse = torch.sqrt(torch.mean((y_pred_mean - stock_predictor.y_test_tensor) ** 2))
-    
     return rmse.item()
 
 def main():
+    """
+    Main Program function
+    """
     stock_predictor = StockPredictor('Stock Data/AAPL.csv')
     study = optuna.create_study(direction='minimize')
     study.optimize(objective, n_trials=50)
@@ -174,7 +240,6 @@ def main():
     best_hid_dim = trial.params['hid_dim']
     best_prior_scale = trial.params['prior_scale']
     best_lr = trial.params['lr']
-
     best_model = BNN(in_dim=7, hid_dim=best_hid_dim, prior_scale=best_prior_scale)
     best_guide = stock_predictor.get_guide(best_model)
     best_svi = stock_predictor.train(best_model, best_guide, num_iterations=1000, lr=best_lr)
