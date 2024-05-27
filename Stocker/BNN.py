@@ -40,7 +40,7 @@ class BNN(PyroModule):
             obs = pyro.sample("obs", dist.Normal(mu, sigma), obs=y)
         return mu
 
-class StockPredictor:
+class StockPredictorBNN:
     """
     Stock Predictor Class
     """
@@ -227,7 +227,7 @@ def main():
     """
     Main Program function
     """
-    stock_predictor = StockPredictor('Stock Data/AAPL.csv')
+    stock_predictor = StockPredictorBNN('Stock Data/AAPL.csv')
     study = optuna.create_study(direction='minimize')
     study.optimize(objective, n_trials=50)
 
