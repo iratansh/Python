@@ -1,0 +1,36 @@
+.background {
+    background-image: url('/stockbackground.jpeg');
+    background-size: cover;
+    background-position: center;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+}
+
+.home {
+    text-align: center;
+    margin-top: 50px;
+}
+
+.custom-dropdown {
+    width: 200px;
+    text-align: center;
+}
+
+.custom-dropdown-item {
+    padding-top: 0.25rem; 
+    padding-bottom: 0.25rem;
+    font-size: 0.875rem; 
+    height: 50px;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.menu {
+   width: 200px;
+   height: 40px;
+   text-align: center;
+}
