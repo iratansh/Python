@@ -1,4 +1,4 @@
-References: Chandra R , Jain K , Deo R V , et al. Langevin-gradient parallel tempering for Bayesian neural learning[J]. Neurocomputing, 2019, 359(SEP.24):315-326., https://uvadlc-notebooks.readthedocs.io/en/latest/tutorial_notebooks/DL2/Bayesian_Neural_Networks/dl2_bnn_tut1_students_with_answers.html, https://www.youtube.com/watch?v=B0Jw0B61ANU&ab_channel=eminshall
+References: Chandra R , Jain K , Deo R V , et al. Langevin-gradient parallel tempering for Bayesian neural learning[J]. Neurocomputing, 2019, 359(SEP.24):315-326., https://uvadlc-notebooks.readthedocs.io/en/latest/tutorial_notebooks/DL2/Bayesian_Neural_Networks/dl2_bnn_tut1_students_with_answers.html
 
 This program is for stock price prediction using a Bayesian Neural Network (BNN) implemented with Pyro, a probabilistic programming library built on top of PyTorch. 
 The main function orchestrates the entire process, including hyperparameter optimization, model training, evaluation, and prediction. It uses Optuna to search for the best hyperparameters, trains the model with those hyperparameters, evaluates on the test set, plots the results, and finally predicts future stock prices.
