@@ -1,4 +1,4 @@
-Results (Stock == AAPL from April 24, 2024 - May 2, 2024):
+Results (Stock == AAPL from April 24, 2024 - May 2, 2024) with Optuna Tuning:
 
 * Actual: Predicted next week adjusted closing prices: [168.79, 169.66, 169.07, 173.26, 170.10, 169.07, 172.80]
 * BNN: Predicted next week adjusted closing prices: [178.30183, 178.57834, 180.0635, 182.80518, 180.9727, 182.26105, 184.41537]
