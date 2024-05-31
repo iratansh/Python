@@ -3,6 +3,9 @@ Compare Results from Models to Actual Values
 """
 
 import matplotlib.pyplot as plt
+import matplotlib
+
+matplotlib.use('Agg')
 
 def percentage_error(model_results):
     """
@@ -28,6 +31,7 @@ def plot_results(y_test, y_pred_bnn, y_pred_xgb, y_pred_avg):
     plt.ylabel('Adjusted Closing Price')
     plt.legend()
     plt.show()
+    plt.savefig('stock_predictions.png')
 
 actual_prices = [168.79, 169.66, 169.07, 173.26, 170.10, 169.07, 172.80]
 pred_bnn = [178.30183, 178.57834, 180.0635, 182.80518, 180.9727, 182.26105, 184.41537]
