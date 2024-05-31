@@ -16,6 +16,9 @@ import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
 import matplotlib.pyplot as plt
 import optuna
+import matplotlib
+
+matplotlib.use('Agg')
 
 class BNN(PyroModule):
     """
