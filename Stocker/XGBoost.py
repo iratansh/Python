@@ -13,6 +13,9 @@ from sklearn.metrics import mean_squared_error, mean_absolute_percentage_error
 import matplotlib.pyplot as plt
 import optuna
 import xgboost as xgb
+import matplotlib
+
+matplotlib.use('Agg')
 
 N_STEPS = 7  # Number of previous days to use for prediction
 MODEL_SEED = 100
