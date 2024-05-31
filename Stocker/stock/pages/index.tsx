@@ -70,7 +70,6 @@ const Home = () => {
 
         {selectedStock && <SendRequestToPython stock={selectedStock} />}
 
-        {/* Other sections */}
         <section id="about" ref={aboutRef} className="pt-20">
           <div className="end">
             <div className="bottomContainer">
