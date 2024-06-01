@@ -4,7 +4,6 @@ Predicts next 7 days adj close prices using BNN and XGBoost and relays the resul
 Saves the plot for representation to the public files in frontend
 """
 
-import flask
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from ComparisonBetweenModels import plot_results, average_parallel_lists
