@@ -1,10 +1,16 @@
+"""
+Backend App 
+Predicts next 7 days adj close prices using BNN and XGBoost and relays the results to the frontend
+Saves the plot for representation to the public files in frontend
+"""
+
 import flask
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from ComparisonBetweenModels import plot_results, average_parallel_lists
 from XGBoost import StockPredictorXGBoost
 from BNN import StockPredictorBNN, BNN
-import matplotlib
+import matplotlib, optuna
 
 matplotlib.use('Agg')
 
@@ -24,25 +30,29 @@ def predict():
         # Predict using XGBoost model
         stock_predictor_XGBoost = StockPredictorXGBoost(f'Stock Data/{stock}.csv')
         best_params = stock_predictor_XGBoost.optimize_hyperparameters(n_trials=30)
-        xgboost_model = stock_predictor_XGBoost.train_with_optimal_hyperparameters({'n_estimators': 394, 'learning_rate': 0.06893921597530149, 'max_depth': 9, 'subsample': 0.9129917307049513, 'colsample_bytree': 0.7942234675042359, 'min_child_weight': 8})
-        next_week_prices_XGBoost = stock_predictor_XGBoost.predict_next_week_close(xgboost_model)
-
+        model = stock_predictor_XGBoost.train_with_optimal_hyperparameters(best_params)
+        next_week_prices_XGBoost = stock_predictor_XGBoost.predict_next_week_close(model)
+        
         # Predict using BNN model
-        stock_predictor_BNN = StockPredictorBNN(f'Stock Data/{stock}.csv')
-        best_hid_dim = 12
-        best_prior_scale = 2.0065996491097478
-        best_lr = 0.0005877286975873452
+        stock_predictor_BNN = StockPredictorBNN('Stock Data/AAPL.csv')
+        study = optuna.create_study(direction='minimize')  # Create an Optuna study and optimize the objective function
+        study.optimize(stock_predictor_BNN.objective, n_trials=50)
+        trial = study.best_trial
+
+        # Train the BNN model with the best hyperparameters
+        best_hid_dim = trial.params['hid_dim']
+        best_prior_scale = trial.params['prior_scale']
+        best_lr = trial.params['lr']
         best_model = BNN(in_dim=7, hid_dim=best_hid_dim, prior_scale=best_prior_scale)
         best_guide = stock_predictor_BNN.get_guide(best_model)
-        stock_predictor_BNN.train(best_model, best_guide, num_iterations=1000, lr=best_lr)
-        
-        # Predict the next week adjusted closing prices
-        next_week_prices_BNN = stock_predictor_BNN.predict_next_week_close(best_model, best_guide)
+        best_svi = stock_predictor_BNN.train(best_model, best_guide, num_iterations=1000, lr=best_lr)
+        y_pred_mean, y_pred_std = stock_predictor_BNN.predict(best_model, best_guide, stock_predictor_BNN.X_test_tensor)  # Predict on the test set using the best model
+        next_week_prices_BNN = stock_predictor_BNN.predict_next_week_close(best_model, best_guide)  # Predict the adjusted closing price
 
         # Average the predictions from both models
         prediction_avg = average_parallel_lists(next_week_prices_XGBoost, next_week_prices_BNN)
         
-        # Plot the results (optional, might need to adjust the function call as needed)
+        # Plot the results (save the plot for representation in the frontend)
         actual_prices = [168.79, 169.66, 169.07, 173.26, 170.10, 169.07, 172.80]
         plot_results(stock, actual_prices, next_week_prices_BNN, next_week_prices_XGBoost, prediction_avg)
         prediction_avg = [round(price, 2) for price in prediction_avg]
