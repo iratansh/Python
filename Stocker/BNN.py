@@ -226,35 +226,36 @@ def objective(trial, stock_predictor):
     rmse = torch.sqrt(torch.mean((y_pred_mean - stock_predictor.y_test_tensor) ** 2))
     return rmse.item()
 
-def main():
-    """
-    Main Program function
-    """
-    stock_predictor = StockPredictorBNN('Stock Data/AAPL.csv')
-    study = optuna.create_study(direction='minimize')
-    study.optimize(objective, n_trials=50)
 
-    print('Best trial:')
-    trial = study.best_trial
-    print(f'  RMSE: {trial.value}')
-    print('  Best hyperparameters:')
-    for key, value in trial.params.items():
-        print(f'    {key}: {value}')
+# Uncomment for testing purposes
+# stock_predictor = StockPredictorBNN('Stock Data/AAPL.csv')
 
-    # Train the model with the best hyperparameters
-    best_hid_dim = trial.params['hid_dim']
-    best_prior_scale = trial.params['prior_scale']
-    best_lr = trial.params['lr']
-    best_model = BNN(in_dim=7, hid_dim=best_hid_dim, prior_scale=best_prior_scale)
-    best_guide = stock_predictor.get_guide(best_model)
-    best_svi = stock_predictor.train(best_model, best_guide, num_iterations=1000, lr=best_lr)
+# # Create an Optuna study and optimize the objective function
+# study = optuna.create_study(direction='minimize')
+# study.optimize(stock_predictor.objective, n_trials=50)
 
-    # Predict on the test set and plot the results
-    y_pred_mean, y_pred_std = stock_predictor.predict(best_model, best_guide, stock_predictor.X_test_tensor)
-    stock_predictor.plot_results(stock_predictor.y_test, y_pred_mean, y_pred_std)
+# print('Best trial:')
+# trial = study.best_trial
+# print(f'  RMSE: {trial.value}')
+# print('  Best hyperparameters:')
+# for key, value in trial.params.items():
+#     print(f'    {key}: {value}')
 
-    # Predict the next day adjusted closing price and next week adjusted closing prices
-    next_day_price = stock_predictor.predict_next_day_close(best_model, best_guide)
-    print(f'Predicted next day adjusted closing price: {next_day_price}')
-    next_week_prices = stock_predictor.predict_next_week_close(best_model, best_guide)
-    print(f'Predicted next week adjusted closing prices: {next_week_prices}')
+# # Train the model with the best hyperparameters
+# best_hid_dim = trial.params['hid_dim']
+# best_prior_scale = trial.params['prior_scale']
+# best_lr = trial.params['lr']
+
+# best_model = BNN(in_dim=7, hid_dim=best_hid_dim, prior_scale=best_prior_scale)
+# best_guide = stock_predictor.get_guide(best_model)
+# best_svi = stock_predictor.train(best_model, best_guide, num_iterations=1000, lr=best_lr)
+
+# # Predict on the test set and plot the results
+# y_pred_mean, y_pred_std = stock_predictor.predict(best_model, best_guide, stock_predictor.X_test_tensor)
+# stock_predictor.plot_results(stock_predictor.y_test, y_pred_mean, y_pred_std)
+
+# # Predict the adjusted closing price
+# next_day_price = stock_predictor.predict_next_day_close(best_model, best_guide)
+# print(f'Predicted next day adjusted closing price: {next_day_price}')
+# next_week_prices = stock_predictor.predict_next_week_close(best_model, best_guide)
+# print(f'Predicted next week adjusted closing prices: {next_week_prices}')
