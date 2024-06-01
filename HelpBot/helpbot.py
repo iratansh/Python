@@ -30,7 +30,7 @@ class HelpBot:
             response.raise_for_status()
             
             data = response.json()
-            city_weather = data['data'][0]  # Assuming only one location is returned
+            city_weather = data['data'][0]  # If only 1 location is required
             
             return f"In {city}, {state if state else ''} {country if country else ''}, the current weather is: {city_weather['weather']['description']}, temperature: {city_weather['temp']}°C."
         
