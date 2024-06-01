@@ -1,15 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import StockPredictionImage from './StockPredictionImage';
 
 const SendRequestToPython = ({ stock }) => {
   const [prediction, setPrediction] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showGraph, setShowGraph] = useState(false);
 
   const fetchPrediction = async () => {
     setLoading(true);
     setError(null);
     setPrediction(null);
+    setShowGraph(false);
 
     let stockSymbol = stock;
     if (typeof stock !== 'string') {
@@ -28,6 +31,7 @@ const SendRequestToPython = ({ stock }) => {
       setError(error.message);
     } finally {
       setLoading(false);
+      setTimeout(() => setShowGraph(true), 1000);  // 1-second delay
     }
   };
 
@@ -48,6 +52,7 @@ const SendRequestToPython = ({ stock }) => {
           <p className="text-gray-700">The predicted prices for {stock} for the next 7 trading days are {prediction.join(', ')}.</p>
         </div>
       )}
+      {showGraph && <StockPredictionImage stock={stock} />}
     </div>
   );
 };
