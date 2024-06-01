@@ -213,10 +213,11 @@ class StockPredictorXGBoost:
             last_n_days = np.append(last_n_days[1:], next_day_price)
         return next_week_predictions
 
-predictor = StockPredictorXGBoost('Stock Data/AAPL.csv')
-best_params = predictor.optimize_hyperparameters(n_trials=30)
-model = predictor.train_with_optimal_hyperparameters(best_params)
-next_day_price = predictor.predict_next_day_close(model)
-print(f'Predicted next day adj closing price: {next_day_price}')
-next_week_prices = predictor.predict_next_week_close(model)
-print(f'Predicted next week adj closing prices: {next_week_prices}')
+# Uncomment For testing purposes
+# predictor = StockPredictorXGBoost('Stock Data/AAPL.csv')
+# best_params = predictor.optimize_hyperparameters(n_trials=30)
+# model = predictor.train_with_optimal_hyperparameters(best_params)
+# next_day_price = predictor.predict_next_day_close(model)
+# print(f'Predicted next day adj closing price: {next_day_price}')
+# next_week_prices = predictor.predict_next_week_close(model)
+# print(f'Predicted next week adj closing prices: {next_week_prices}')
