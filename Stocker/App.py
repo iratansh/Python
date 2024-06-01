@@ -25,16 +25,26 @@ def predict():
 
     stock = str(stock)
     print(f'Received request for stock: {stock}')
-
+    
     try:
+        # Update the stock data CSV file with the latest data
+        add_historical_stock_data_to_csv(stock)
+        
+        # Define the path to the updated CSV file
+        stock_csv_path = f'Stock Data/{stock}.csv'
+
+        # Check if the updated CSV file exists
+        if not os.path.exists(stock_csv_path):
+            return jsonify({'error': f'Stock data file {stock_csv_path} does not exist'}), 400
+        
         # Predict using XGBoost model
-        stock_predictor_XGBoost = StockPredictorXGBoost(f'Stock Data/{stock}.csv')
+        stock_predictor_XGBoost = StockPredictorXGBoost(stock_csv_path)
         best_params = stock_predictor_XGBoost.optimize_hyperparameters(n_trials=30)
         model = stock_predictor_XGBoost.train_with_optimal_hyperparameters(best_params)
         next_week_prices_XGBoost = stock_predictor_XGBoost.predict_next_week_close(model)
         
         # Predict using BNN model
-        stock_predictor_BNN = StockPredictorBNN('Stock Data/AAPL.csv')
+        stock_predictor_BNN = StockPredictorBNN(stock_csv_path)
         study = optuna.create_study(direction='minimize')  # Create an Optuna study and optimize the objective function
         study.optimize(stock_predictor_BNN.objective, n_trials=50)
         trial = study.best_trial
@@ -52,8 +62,8 @@ def predict():
         # Average the predictions from both models
         prediction_avg = average_parallel_lists(next_week_prices_XGBoost, next_week_prices_BNN)
         
-        # Plot the results (save the plot for representation in the frontend)
-        actual_prices = [168.79, 169.66, 169.07, 173.26, 170.10, 169.07, 172.80]
+        # Plot the results (optional, might need to adjust the function call as needed)
+        actual_prices = [168.79, 169.66, 169.07, 173.26, 170.10, 169.07, 172.80]  # Replace with actual prices if available
         plot_results(stock, actual_prices, next_week_prices_BNN, next_week_prices_XGBoost, prediction_avg)
         prediction_avg = [round(price, 2) for price in prediction_avg]
 
