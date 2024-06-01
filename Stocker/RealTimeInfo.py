@@ -27,10 +27,10 @@ def add_historical_stock_data_to_csv(stock):
         
     stock_data = yf.Ticker(stock)  # Fetch new data from Yahoo Finance
     if last_date:
-        start_date = last_date + pd.Timedelta(days=1)          # Fetch new data from the day after the last date to today
+        start_date = last_date + pd.Timedelta(days=1)  # Fetch new data from the day after the last date to today
         new_data = stock_data.history(start=start_date)
     else:
-        new_data = stock_data.history(period='1mo')  # Fetch data for the last month if there's no existing data
+        new_data = stock_data.history(period='5y')  # Fetch data for the last month if there's no existing data
     if not new_data.empty:
         combined_data = pd.concat([existing_data, new_data])   # Combine existing data with new data
         combined_data = combined_data[~combined_data.index.duplicated(keep='last')]  # Remove duplicates, if any
