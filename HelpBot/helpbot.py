@@ -1,13 +1,18 @@
 """
-HelpBot: A multi-purpose chatbot application
+Helpbot - A multi-purpose chatbot application
 """
 
 import spacy
-import requests, PyDictionary
+import requests
+from datetime import datetime
+from PyDictionary import PyDictionary
 from chatterbot import ChatBot
 from chatterbot.trainers import ListTrainer
-from datetime import datetime
 import yfinance as yf
+from sumy.parsers.plaintext import PlaintextParser
+from sumy.nlp.tokenizers import Tokenizer
+from sumy.summarizers.lsa import LsaSummarizer
+from transformers import pipeline
 
 class HelpBot:
     def __init__(self):
@@ -16,6 +21,84 @@ class HelpBot:
         self.trainer = ListTrainer(self.help_bot)
         self.API_KEY = '725fc8d670f044b4b6cab371441f9d59'
         self.last_result = None
+        self.summarization_pipeline = pipeline("summarization")
+        self.train_basic_conversations()
+
+    def train_basic_conversations(self):
+        conversations = [
+            "Hello", "Hi there!",
+            "Hi", "Hello!",
+            "How are you?", "I'm good, thank you! How can I help you today?",
+            "What's your name?", "I'm HelpBot, your assistant.",
+            "Goodbye", "Goodbye! Have a nice day!",
+            "See you later", "See you later! Take care!",
+            "What can you do?", "I can help you with various tasks like checking the time, date, weather, doing simple math calculations, summarizing text, and more. Just ask me anything!",
+            "Thanks", "You're welcome!",
+            "Thank you", "You're welcome!",
+            "What's up?", "Not much, just here to help you!",
+            "How can you help me?", "I can help you with various tasks like checking the time, date, weather, doing simple math calculations, summarizing text, and more. Just ask me anything!",
+            "Can you help me?", "Of course! Just tell me what you need help with.",
+            "Who are you?", "I'm HelpBot, your assistant.",
+            "What are you?", "I'm HelpBot, your assistant.",
+            "What do you do?", "I can help you with various tasks like checking the time, date, weather, doing simple math calculations, summarizing text, and more. Just ask me anything!",
+            "What is your purpose?", "I'm here to help you with anything you need!",
+            "Who made you?", "I was created by a developer named Ishaan.",
+            "Who created you?", "I was created by a developer named Ishaan.",
+            "Who is your creator?", "I was created by a developer named Ishaan.",
+            "Who is your developer?", "I was created by a developer named Ishaan.",
+            "Who is your owner?", "I was created by a developer named Ishaan.",
+            "Who is your master?", "I have no master, I'm here to help you!",
+            "What's new?" "Nothing much, I'm here to help you with anything you need!",
+            "How's your day?" "I'm a bot, I don't have days, but I'm here to help you!",
+            "Howdy" "Hello! How can I help you today?",
+            "Hey" "Hello! How can I help you today?",
+            "Yo" "Hello! How can I help you today?",
+            "What's happening?" "Nothing much, I'm here to help you with anything you need!",
+            "What's going on?" "Nothing much, I'm here to help you with anything you need!",
+            "Good morning" "Good morning! How can I help you today?",
+            "Good afternoon" "Good afternoon! How can I help you today?",
+            "Good evening" "Good evening! How can I help you today?",
+            "Good night" "Good night! Have a nice day!",
+            "Howdy partner" "Hello! How can I help you today?",
+            "Hey there" "Hello! How can I help you today?",
+            "Hey buddy" "Hello! How can I help you today?",
+            "Hey friend" "Hello! How can I help you today?",
+            "Hey pal" "Hello! How can I help you today?",
+            "Hey dude" "Hello! How can I help you today?",
+            "Nice to meet you" "Nice to meet you too! How can I help you today?",
+            "Pleased to meet you" "Pleased to meet you too! How can I help you today?",
+            "Nice meeting you" "Nice meeting you too! How can I help you today?",
+            "Pleased meeting you" "Pleased meeting you too! How can I help you today?",
+            "How have you been?" "I'm a bot, I don't have feelings, but I'm here to help you!",
+            "How's life?" "I'm a bot, I don't have a life, but I'm here to help you!",
+            "How's everything?" "Everything is good! How can I help you today?",
+            "How's it going?" "Everything is good! How can I help you today?",
+            "How's the weather?" "I can check the weather for you! Just tell me the city.",
+            "What's the weather like?" "I can check the weather for you! Just tell me the city.",
+            "What's the temperature?" "I can check the weather for you! Just tell me the city.",
+            "Greetings" "Hello! How can I help you today?",
+            "Salutations" "Hello! How can I help you today?",
+            "Hello there" "Hello! How can I help you today?",
+            "Hello friend" "Hello! How can I help you today?",
+            "Hello buddy" "Hello! How can I help you today?",
+            "Hello pal" "Hello! How can I help you today?",
+            "Hello dude" "Hello! How can I help you today?",
+            "Hello mate" "Hello! How can I help you today?",
+            "Hello sir" "Hello! How can I help you today?",
+            "Hello ma'am" "Hello! How can I help you today?",
+            "Hello miss" "Hello! How can I help you today?",
+            "Hello mister" "Hello! How can I help you today?",
+            "Hello madam" "Hello! How can I help you today?",
+            "What's the news?" "I can't provide news updates, but I can help you with other things!",
+            "What's the latest?" "I can't provide news updates, but I can help you with other things!",
+            "Long time no see" "I'm a bot, I don't have eyes, but I'm here to help you!",
+            "It's been a while" "I'm a bot, I don't have a sense of time, but I'm here to help you!",
+            "How's the family?" "I'm a bot, I don't have a family, but I'm here to help you!",
+            "How's work?" "I'm a bot, I don't have a job, but I'm here to help you!",
+            "How's school?" "I'm a bot, I don't go to school, but I'm here to help you!",
+            "How's the job?" "I'm a bot, I don't have a job, but I'm here to help you!",
+        ]
+        self.trainer.train(conversations)
 
     def get_weather(self, city, state=None, country=None):
         base_url = 'https://api.weatherbit.io/v2.0/current'
@@ -67,6 +150,12 @@ class HelpBot:
             return "Sorry, I don't understand that. Please rephrase your statement."
 
     def respond_to_user(self, statement):
+        # Check for basic conversational prompts
+        response = self.help_bot.get_response(statement)
+        if response.confidence > 0.5:
+            return str(response)
+        
+        # Handle other types of queries
         doc = self.nlp(statement)
         if "time" in statement.lower() and not any(token.text in ['times', 'multiply'] for token in doc):
             return self.get_current_time()
@@ -79,11 +168,13 @@ class HelpBot:
         elif "webpage" in statement.lower():
             return self.train_for_webpage_content(statement)
         elif "wikipedia" in statement.lower():
-            return self.get_wikipedia_content(statement)
+            return self.train_for_wikipedia(statement)
         elif "stock" in statement.lower():
             return self.train_for_stock_information(statement)
         elif "dictionary" in statement.lower():
-            return self.get_dictionary_definition(statement)
+            return self.train_for_dictionary(statement)
+        elif "summarize" in statement.lower():
+            return self.train_for_summary(statement)
         else:
             return "I'm not sure how to help with that."
 
@@ -175,242 +266,92 @@ class HelpBot:
         if operation in ('plus', '+'):
             result = numbers[0] + numbers[1]
         elif operation in ('minus', '-'):
-            result = numbers[0] - numbers
-
-    def search_internet_for_educational_resources(self, topic):
-        return "I'm sorry, I'm not able to help with that."
-
-    def search_internet_for_news(self, topic):
-        return "I'm sorry, I'm not able to help with that."
-
-    def search_internet_for_entertainment(self, topic):
-        return "I'm sorry, I'm not able to help with that."
-
-    def search_internet_for_sports(self, topic):
-        return "I'm sorry, I'm not able to help with that."
-
-    def search_internet_for_technology(self, topic):
-        return "I'm sorry, I'm not able to help with that."
-
-    def search_internet_for_health(self, topic):
-        return "I'm sorry, I'm not able to help with that."
-
-    def search_internet_for_business(self, topic):
-        return "I'm sorry, I'm not able to help with that."
-
-    def search_internet_for_travel(self, topic):
-        return "I'm sorry, I'm not able to help with that."
-
-    def search_internet_for_shopping(self, topic):
-        return "I'm sorry, I'm not able to help with that."
-
-    def search_internet_for_food(self, topic):
-        return "I'm sorry, I'm not able to help with that."
-
-    def search_internet_for_social_media(self, topic):
-        return "I'm sorry, I'm not able to help with that."
-
-    def search_internet_for_videos(self, topic):
-        return "I'm sorry, I'm not able to help with that."
-
-    def search_internet_for_images(self, topic):
-        return "I'm sorry, I'm not able to help with that."
-
-    def search_internet_for_music(self, topic):
-        return "I'm sorry, I'm not able to help with that."
-
-    def search_internet_for_movies(self, topic):
-        return "I'm sorry, I'm not able to help with that."
-
-    def search_internet_for_books(self, topic):
-        return "I'm sorry, I'm not able to help with that."
-
-    def get_dictionary_definition(self, word):
-        dictionary = PyDictionary.PyDictionary()
-        definition = dictionary.meaning(word)
-        if definition:
-            return f"The definition of {word} is: {definition['Noun'][0]}"
+            result = numbers[0] - numbers[1]
+        elif operation in ('times', '*'):
+            result = numbers[0] * numbers[1]
+        elif operation in ('divided', 'divide', '/'):
+            result = numbers[0] / numbers[1]
         else:
-            return "I'm sorry, I'm not able to help with that."
-        
+            return "Unknown operation."
+
+        self.last_result = result
+        return f"The result is {result}."
+
     def summarize_information(self, text):
+        # Simple summarization method
         doc = self.nlp(text)
-        word_dict = dict()
+        word_freq = {}
+
         for word in doc:
-            word = word.text.lower()
-
-            if word in word_dict:
-                word_dict[word] += 1
+            if word.is_stop or word.is_punct:
+                continue
+            word_text = word.text.lower()
+            if word_text not in word_freq:
+                word_freq[word_text] = 1
             else:
-                word_dict[word] = 1
-        sentences = []
+                word_freq[word_text] += 1
 
-        sentence_score = 0
-        for i, sentence in enumerate(doc.sents):
-            for word in sentence:
-                word = word.text.lower()
-                sentence_score += word_dict[word]
-            sentences.append((i, sentence.text.replace('\n', ''), sentence_score/len(sentence)))
+        max_freq = max(word_freq.values())
+        for word in word_freq:
+            word_freq[word] /= max_freq
+
+        sentence_scores = {}
+        for sent in doc.sents:
+            for word in sent:
+                word_text = word.text.lower()
+                if word_text in word_freq:
+                    if sent not in sentence_scores:
+                        sentence_scores[sent] = word_freq[word_text]
+                    else:
+                        sentence_scores[sent] += word_freq[word_text]
+
+        from heapq import nlargest
+        summarized_sentences = nlargest(3, sentence_scores, key=sentence_scores.get)
+        final_summary = ' '.join([sent.text for sent in summarized_sentences])
+        return final_summary
+
+    def advanced_summarize(self, text):
+        parser = PlaintextParser.from_string(text, Tokenizer("english"))
+        summarizer = LsaSummarizer()
+        summary = summarizer(parser.document, 3)  # Summarize the document with 3 sentences
+        return ' '.join([str(sentence) for sentence in summary])
+    
+    def transformer_summarize(self, text):
+        return self.summarization_pipeline(text, max_length=50, min_length=25, do_sample=False)[0]['summary_text']
+
+    def train_for_summary(self, text):
+        if "advanced" in text:
+            return self.advanced_summarize(text)
+        elif "transformer" in text:
+            return self.transformer_summarize(text)
+        else:
+            return self.summarize_information(text)
+    
+    def train_for_webpage_content(self, text):
+
+        return "Webpage content training is not implemented yet."
+
+    def train_for_wikipedia(self, text):
+
+        return "Wikipedia content training is not implemented yet."
+
+    def train_for_stock_information(self, text):
         
-        sorted_sentences = sorted(sentences, key=lambda x: -x[2], reverse=True)
-        top_three = sorted(sorted_sentences[:3], key=lambda x: x[0])
-        summary = ""
-        for sentence in top_three:
-            summary += sentence[1] + " "
-        return summary
+        return "Stock information training is not implemented yet."
 
-    def train_for_stock_information(self, statement):
-        min_similarity = 0.5
-        stock = self.nlp('Current Stock Information for a Symbol')
-        doc = self.nlp(statement)
+    def train_for_dictionary(self, text):
 
-        if stock.similarity(doc) >= min_similarity:
-            symbol = None
-            for ent in doc.ents:
-                if ent.label_ == "ORG":
-                    symbol = ent.text
+        return "Dictionary training is not implemented yet."
 
-            if symbol:
-                return self.get_current_stock_information(symbol)
-            else:
-                return "You need to tell me a stock symbol to check."
-        else:
-            return "Sorry, I don't understand that. Please rephrase your statement."
-
-    def train_for_webpage_content(self, statement):
-        min_similarity = 0.5
-        webpage = self.nlp('Access Webpage Content')
-        doc = self.nlp(statement)
-
-        if webpage.similarity(doc) >= min_similarity:
-            url = None
-            for ent in doc.ents:
-                if ent.label_ == "URL":
-                    url = ent.text
-
-            if url:
-                return self.get_webpage_content(url)
-            else:
-                return "You need to tell me a URL to check."
-        else:
-            return "Sorry, I don't understand that. Please rephrase your statement."
-
-    def train_for_searching_internet(self, statement):
-        min_similarity = 0.5
-        search = self.nlp('Search Internet for Educational Resources')
-        doc = self.nlp(statement)
-
-        if search.similarity(doc) >= min_similarity:
-            topic = None
-            for ent in doc.ents:
-                if ent.label_ == "ORG":
-                    topic = ent.text
-
-            if topic:
-                return self.search_internet_for_educational_resources(topic)
-            else:
-                return "You need to tell me a topic to search for."
-        else:
-            return "Sorry, I don't understand that. Please rephrase your statement."
-    
-    def train_for_wikipedia(self, statement):
-        min_similarity = 0.5
-        wikipedia = self.nlp('Get Wikipedia Summary')
-        doc = self.nlp(statement)
-
-        if wikipedia.similarity(doc) >= min_similarity:
-            topic = None
-            for ent in doc.ents:
-                if ent.label_ == "ORG":
-                    topic = ent.text
-
-            if topic:
-                return self.get_wikipedia_content(topic)
-            else:
-                return "You need to tell me a topic to search for."
-        else:
-            return "Sorry, I don't understand that. Please rephrase your statement."
-        
-    def train_for_dictionary(self, statement):
-        min_similarity = 0.5
-        dictionary = self.nlp('Get Dictionary Definition')
-        doc = self.nlp(statement)
-
-        if dictionary.similarity(doc) >= min_similarity:
-            word = None
-            for ent in doc.ents:
-                if ent.label_ == "ORG":
-                    word = ent.text
-
-            if word:
-                return self.get_dictionary_definition(word)
-            else:
-                return "You need to tell me a word to check."
-        else:
-            return "Sorry, I don't understand that. Please rephrase your statement."
-    
-    def train_for_time(self, statement):
-        min_similarity = 0.5
-        time = self.nlp('Get Current Time')
-        doc = self.nlp(statement)
-
-        if time.similarity(doc) >= min_similarity:
-            return self.get_current_time()
-        else:
-            return "Sorry, I don't understand that. Please rephrase your statement."
-    
-    def train_for_date(self, statement):
-        min_similarity = 0.5
-        date = self.nlp('Get Current Date')
-        doc = self.nlp(statement)
-
-        if date.similarity(doc) >= min_similarity:
-            return self.get_current_date()
-        else:
-            return "Sorry, I don't understand that. Please rephrase your statement."
-        
-    def train_for_weather(self, statement):
-        min_similarity = 0.5
-        weather = self.nlp('Get Current Weather Details')
-        doc = self.nlp(statement)
-
-        if weather.similarity(doc) >= min_similarity:
-            return self.respond_to_weather_query(statement)
-        else:
-            return "Sorry, I don't understand that. Please rephrase your statement."
-        
-    def train_for_math(self, statement):
-        min_similarity = 0.5
-        math = self.nlp('Simple Math Calculations')
-        doc = self.nlp(statement)
-
-        if math.similarity(doc) >= min_similarity:
-            return self.simple_math_calculations(statement)
-        else:
-            return "Sorry, I don't understand that. Please rephrase your statement."
-    
-    def train_for_summary(self, statement):
-        min_similarity = 0.5
-        summary = self.nlp('Summarize Information')
-        doc = self.nlp(statement)
-
-        if summary.similarity(doc) >= min_similarity:
-            return self.summarize_information(statement)
-        else:
-            return "Sorry, I don't understand that. Please rephrase your statement."
-    
 def main():
-    help_bot = HelpBot()
-    help_bot.train_weather_queries()
-    
-    print("Welcome to HelpBot! Type 'exit' to quit.")
+    bot = HelpBot()
     while True:
-        user_input = input("You: ")
-        if user_input.lower() == 'exit':
+        statement = input("You: ")
+        if statement.lower() == "exit":
             print("Goodbye!")
             break
-        response = help_bot.respond_to_user(user_input)
-        print(f"Bot: {response}")
+        response = bot.respond_to_user(statement)
+        print("HelpBot:", response)
 
 if __name__ == "__main__":
     main()
