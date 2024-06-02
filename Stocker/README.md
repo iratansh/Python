@@ -1,3 +1,5 @@
+**Stocker**
+
 Frontend:
 * Next.js: Used for developing user-friendly interfaces and dynamic web applications.
 * Swift: Utilized for developing responsive and interactive iOS applications.
