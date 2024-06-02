@@ -3,11 +3,11 @@
 **Summary**
 This project focuses on developing and implementing Time Series Forecasting algorithms using machine learning techniques. By integrating real-time stock data, I aim to enhance the accuracy of stock price predictions. The key components of the project include:
 
-Algorithms Used: XGBoost and Bayesian Neural Networks (BNN) were utilized to create the predictive models.
-Prediction Scope: The models forecast stock prices for the upcoming seven days.
-Model Performance: A combined model approach, leveraging predictions from both XGBoost and BNN models, achieved an RMSE of 0.0376.
-User Interfaces: Developed user-friendly interfaces using Next.js for web and Swift for iOS to provide seamless access to dynamic stock market predictions.
-This project showcases the effective combination of machine learning models and real-time data integration to deliver accurate and accessible stock price forecasts.
+* Algorithms Used: XGBoost and Bayesian Neural Networks (BNN) were utilized to create the predictive models.
+* Prediction Scope: The models forecast stock prices for the upcoming seven days.
+* Model Performance: A combined model approach, leveraging predictions from both XGBoost and BNN models, achieved an RMSE of 0.0376.
+* User Interfaces: Developed user-friendly interfaces using Next.js for web and Swift for iOS to provide seamless access to dynamic stock market predictions.
+* This project showcases the effective combination of machine learning models and real-time data integration to deliver accurate and accessible stock price forecasts.
 
 **Frontend**:
 * Next.js: Used for developing user-friendly interfaces and dynamic web applications.
