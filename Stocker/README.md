@@ -1,4 +1,4 @@
-**Stocker**
+#**Stocker**
 
 Frontend:
 * Next.js: Used for developing user-friendly interfaces and dynamic web applications.
