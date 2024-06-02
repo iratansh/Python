@@ -30,7 +30,7 @@ class HelpBot:
             response.raise_for_status()
             
             data = response.json()
-            city_weather = data['data'][0]  # If only 1 location is required
+            city_weather = data['data'][0]  # Assuming only one location is returned
             
             return f"In {city}, {state if state else ''} {country if country else ''}, the current weather is: {city_weather['weather']['description']}, temperature: {city_weather['temp']}°C."
         
@@ -232,6 +232,32 @@ class HelpBot:
             return f"The definition of {word} is: {definition['Noun'][0]}"
         else:
             return "I'm sorry, I'm not able to help with that."
+        
+    def summarize_information(self, text):
+        doc = self.nlp(text)
+        word_dict = dict()
+        for word in doc:
+            word = word.text.lower()
+
+            if word in word_dict:
+                word_dict[word] += 1
+            else:
+                word_dict[word] = 1
+        sentences = []
+
+        sentence_score = 0
+        for i, sentence in enumerate(doc.sents):
+            for word in sentence:
+                word = word.text.lower()
+                sentence_score += word_dict[word]
+            sentences.append((i, sentence.text.replace('\n', ''), sentence_score/len(sentence)))
+        
+        sorted_sentences = sorted(sentences, key=lambda x: -x[2], reverse=True)
+        top_three = sorted(sorted_sentences[:3], key=lambda x: x[0])
+        summary = ""
+        for sentence in top_three:
+            summary += sentence[1] + " "
+        return summary
 
     def train_for_stock_information(self, statement):
         min_similarity = 0.5
@@ -269,8 +295,110 @@ class HelpBot:
         else:
             return "Sorry, I don't understand that. Please rephrase your statement."
 
+    def train_for_searching_internet(self, statement):
+        min_similarity = 0.5
+        search = self.nlp('Search Internet for Educational Resources')
+        doc = self.nlp(statement)
 
+        if search.similarity(doc) >= min_similarity:
+            topic = None
+            for ent in doc.ents:
+                if ent.label_ == "ORG":
+                    topic = ent.text
 
+            if topic:
+                return self.search_internet_for_educational_resources(topic)
+            else:
+                return "You need to tell me a topic to search for."
+        else:
+            return "Sorry, I don't understand that. Please rephrase your statement."
+    
+    def train_for_wikipedia(self, statement):
+        min_similarity = 0.5
+        wikipedia = self.nlp('Get Wikipedia Summary')
+        doc = self.nlp(statement)
+
+        if wikipedia.similarity(doc) >= min_similarity:
+            topic = None
+            for ent in doc.ents:
+                if ent.label_ == "ORG":
+                    topic = ent.text
+
+            if topic:
+                return self.get_wikipedia_content(topic)
+            else:
+                return "You need to tell me a topic to search for."
+        else:
+            return "Sorry, I don't understand that. Please rephrase your statement."
+        
+    def train_for_dictionary(self, statement):
+        min_similarity = 0.5
+        dictionary = self.nlp('Get Dictionary Definition')
+        doc = self.nlp(statement)
+
+        if dictionary.similarity(doc) >= min_similarity:
+            word = None
+            for ent in doc.ents:
+                if ent.label_ == "ORG":
+                    word = ent.text
+
+            if word:
+                return self.get_dictionary_definition(word)
+            else:
+                return "You need to tell me a word to check."
+        else:
+            return "Sorry, I don't understand that. Please rephrase your statement."
+    
+    def train_for_time(self, statement):
+        min_similarity = 0.5
+        time = self.nlp('Get Current Time')
+        doc = self.nlp(statement)
+
+        if time.similarity(doc) >= min_similarity:
+            return self.get_current_time()
+        else:
+            return "Sorry, I don't understand that. Please rephrase your statement."
+    
+    def train_for_date(self, statement):
+        min_similarity = 0.5
+        date = self.nlp('Get Current Date')
+        doc = self.nlp(statement)
+
+        if date.similarity(doc) >= min_similarity:
+            return self.get_current_date()
+        else:
+            return "Sorry, I don't understand that. Please rephrase your statement."
+        
+    def train_for_weather(self, statement):
+        min_similarity = 0.5
+        weather = self.nlp('Get Current Weather Details')
+        doc = self.nlp(statement)
+
+        if weather.similarity(doc) >= min_similarity:
+            return self.respond_to_weather_query(statement)
+        else:
+            return "Sorry, I don't understand that. Please rephrase your statement."
+        
+    def train_for_math(self, statement):
+        min_similarity = 0.5
+        math = self.nlp('Simple Math Calculations')
+        doc = self.nlp(statement)
+
+        if math.similarity(doc) >= min_similarity:
+            return self.simple_math_calculations(statement)
+        else:
+            return "Sorry, I don't understand that. Please rephrase your statement."
+    
+    def train_for_summary(self, statement):
+        min_similarity = 0.5
+        summary = self.nlp('Summarize Information')
+        doc = self.nlp(statement)
+
+        if summary.similarity(doc) >= min_similarity:
+            return self.summarize_information(statement)
+        else:
+            return "Sorry, I don't understand that. Please rephrase your statement."
+    
 def main():
     help_bot = HelpBot()
     help_bot.train_weather_queries()
