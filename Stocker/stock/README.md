@@ -1,3 +1,6 @@
 Files for Web Application
-<img width="1512" alt="image" src="https://github.com/iratansh/Python/assets/151393106/24513139-3f35-4fb4-b63d-ff8275a62dcf">
-<img width="1512" alt="image" src="https://github.com/iratansh/Python/assets/151393106/6adcf811-c4b5-47b1-ae62-a01b39ac3cd4">
+
+<img width="1512" alt="image" src="https://github.com/iratansh/Python/assets/151393106/de6b9f2a-2089-4a56-882a-69976c02c548">
+<img width="1512" alt="image" src="https://github.com/iratansh/Python/assets/151393106/db51ca82-e918-47a9-98d9-616e30056370">
+<img width="1512" alt="image" src="https://github.com/iratansh/Python/assets/151393106/f87c7f56-1143-4cd7-91b7-25a53d030c13">
+
