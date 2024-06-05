@@ -9,96 +9,36 @@ from PyDictionary import PyDictionary
 from chatterbot import ChatBot
 from chatterbot.trainers import ListTrainer
 import yfinance as yf
-from sumy.parsers.plaintext import PlaintextParser
-from sumy.nlp.tokenizers import Tokenizer
-from sumy.summarizers.lsa import LsaSummarizer
 from transformers import pipeline
+import nltk
+from nltk.corpus import wordnet
+import heapq
+import re
+import logging
+from collections import deque
 
 class HelpBot:
     def __init__(self):
+        # Initialize Spacy model and other components
         self.nlp = spacy.load("en_core_web_md")
         self.help_bot = ChatBot('help_bot')
         self.trainer = ListTrainer(self.help_bot)
         self.API_KEY = '725fc8d670f044b4b6cab371441f9d59'
         self.last_result = None
         self.summarization_pipeline = pipeline("summarization")
-        self.train_basic_conversations()
+        self.train_conversations_from_file('conversations.txt')
+        logging.basicConfig(level=logging.INFO)
+        self.context = deque(maxlen=10)  # Memory mechanism to keep track of context
 
-    def train_basic_conversations(self):
-        conversations = [
-            "Hello", "Hi there!",
-            "Hi", "Hello!",
-            "How are you?", "I'm good, thank you! How can I help you today?",
-            "What's your name?", "I'm HelpBot, your assistant.",
-            "Goodbye", "Goodbye! Have a nice day!",
-            "See you later", "See you later! Take care!",
-            "What can you do?", "I can help you with various tasks like checking the time, date, weather, doing simple math calculations, summarizing text, and more. Just ask me anything!",
-            "Thanks", "You're welcome!",
-            "Thank you", "You're welcome!",
-            "What's up?", "Not much, just here to help you!",
-            "How can you help me?", "I can help you with various tasks like checking the time, date, weather, doing simple math calculations, summarizing text, and more. Just ask me anything!",
-            "Can you help me?", "Of course! Just tell me what you need help with.",
-            "Who are you?", "I'm HelpBot, your assistant.",
-            "What are you?", "I'm HelpBot, your assistant.",
-            "What do you do?", "I can help you with various tasks like checking the time, date, weather, doing simple math calculations, summarizing text, and more. Just ask me anything!",
-            "What is your purpose?", "I'm here to help you with anything you need!",
-            "Who made you?", "I was created by a developer named Ishaan.",
-            "Who created you?", "I was created by a developer named Ishaan.",
-            "Who is your creator?", "I was created by a developer named Ishaan.",
-            "Who is your developer?", "I was created by a developer named Ishaan.",
-            "Who is your owner?", "I was created by a developer named Ishaan.",
-            "Who is your master?", "I have no master, I'm here to help you!",
-            "What's new?" "Nothing much, I'm here to help you with anything you need!",
-            "How's your day?" "I'm a bot, I don't have days, but I'm here to help you!",
-            "Howdy" "Hello! How can I help you today?",
-            "Hey" "Hello! How can I help you today?",
-            "Yo" "Hello! How can I help you today?",
-            "What's happening?" "Nothing much, I'm here to help you with anything you need!",
-            "What's going on?" "Nothing much, I'm here to help you with anything you need!",
-            "Good morning" "Good morning! How can I help you today?",
-            "Good afternoon" "Good afternoon! How can I help you today?",
-            "Good evening" "Good evening! How can I help you today?",
-            "Good night" "Good night! Have a nice day!",
-            "Howdy partner" "Hello! How can I help you today?",
-            "Hey there" "Hello! How can I help you today?",
-            "Hey buddy" "Hello! How can I help you today?",
-            "Hey friend" "Hello! How can I help you today?",
-            "Hey pal" "Hello! How can I help you today?",
-            "Hey dude" "Hello! How can I help you today?",
-            "Nice to meet you" "Nice to meet you too! How can I help you today?",
-            "Pleased to meet you" "Pleased to meet you too! How can I help you today?",
-            "Nice meeting you" "Nice meeting you too! How can I help you today?",
-            "Pleased meeting you" "Pleased meeting you too! How can I help you today?",
-            "How have you been?" "I'm a bot, I don't have feelings, but I'm here to help you!",
-            "How's life?" "I'm a bot, I don't have a life, but I'm here to help you!",
-            "How's everything?" "Everything is good! How can I help you today?",
-            "How's it going?" "Everything is good! How can I help you today?",
-            "How's the weather?" "I can check the weather for you! Just tell me the city.",
-            "What's the weather like?" "I can check the weather for you! Just tell me the city.",
-            "What's the temperature?" "I can check the weather for you! Just tell me the city.",
-            "Greetings" "Hello! How can I help you today?",
-            "Salutations" "Hello! How can I help you today?",
-            "Hello there" "Hello! How can I help you today?",
-            "Hello friend" "Hello! How can I help you today?",
-            "Hello buddy" "Hello! How can I help you today?",
-            "Hello pal" "Hello! How can I help you today?",
-            "Hello dude" "Hello! How can I help you today?",
-            "Hello mate" "Hello! How can I help you today?",
-            "Hello sir" "Hello! How can I help you today?",
-            "Hello ma'am" "Hello! How can I help you today?",
-            "Hello miss" "Hello! How can I help you today?",
-            "Hello mister" "Hello! How can I help you today?",
-            "Hello madam" "Hello! How can I help you today?",
-            "What's the news?" "I can't provide news updates, but I can help you with other things!",
-            "What's the latest?" "I can't provide news updates, but I can help you with other things!",
-            "Long time no see" "I'm a bot, I don't have eyes, but I'm here to help you!",
-            "It's been a while" "I'm a bot, I don't have a sense of time, but I'm here to help you!",
-            "How's the family?" "I'm a bot, I don't have a family, but I'm here to help you!",
-            "How's work?" "I'm a bot, I don't have a job, but I'm here to help you!",
-            "How's school?" "I'm a bot, I don't go to school, but I'm here to help you!",
-            "How's the job?" "I'm a bot, I don't have a job, but I'm here to help you!",
-        ]
-        self.trainer.train(conversations)
+    def train_conversations_from_file(self, filename):
+        try:
+            with open(filename, 'r') as file:
+                conversations = [line.strip().split('|') for line in file.readlines()]
+                for conversation in conversations:
+                    if len(conversation) == 2:
+                        self.trainer.train(conversation)
+        except Exception as e:
+            logging.error(f"Error training conversations from file: {e}")
 
     def get_weather(self, city, state=None, country=None):
         base_url = 'https://api.weatherbit.io/v2.0/current'
@@ -118,11 +58,8 @@ class HelpBot:
             return f"In {city}, {state if state else ''} {country if country else ''}, the current weather is: {city_weather['weather']['description']}, temperature: {city_weather['temp']}°C."
         
         except Exception as e:
-            print(e)
+            logging.error(f"Error fetching weather data: {e}")
             return "Failed to get weather data."
-
-    def train_weather_queries(self):
-        self.trainer.train(["Current Weather Details in a City"])
 
     def respond_to_weather_query(self, statement):
         doc = self.nlp(statement)
@@ -154,6 +91,7 @@ class HelpBot:
         response = self.help_bot.get_response(statement)
         if response.confidence > 0.5:
             return str(response)
+        self.context.append(statement)  # Store context for personalization and continuity
         
         # Handle other types of queries
         doc = self.nlp(statement)
@@ -161,15 +99,15 @@ class HelpBot:
             return self.get_current_time()
         elif any(token.lemma_ in ["weather", "temperature"] for token in doc):
             return self.respond_to_weather_query(statement)
-        elif any(token.lemma_ in ["plus", "minus", "times", "divided", "divide", "+", "-", "*", "/"] for token in doc):
+        elif any(token.lemma_ in ["plus", "minus", "times", "divided", "divide", "+", "-", "*", "/", "x"] for token in doc):
             return self.simple_math_calculations(statement)
         elif "date" in statement.lower():
             return self.get_current_date()
-        elif "webpage" in statement.lower():
+        elif "webpage" in statement.lower() or self.contains_url(statement):
             return self.train_for_webpage_content(statement)
         elif "wikipedia" in statement.lower():
             return self.train_for_wikipedia(statement)
-        elif "stock" in statement.lower():
+        elif "stock" in statement.lower() or self.contains_stock_ticker(doc):
             return self.train_for_stock_information(statement)
         elif "dictionary" in statement.lower():
             return self.train_for_dictionary(statement)
@@ -177,6 +115,15 @@ class HelpBot:
             return self.train_for_summary(statement)
         else:
             return "I'm not sure how to help with that."
+
+    def contains_stock_ticker(self, doc):
+        # Simple heuristic to check if a statement might contain a stock ticker symbol
+        stock_symbols = ["AAPL", "GOOG", "MSFT", "TSLA"] 
+        return any(token.text in stock_symbols for token in doc)
+
+    def contains_url(self, statement):
+        url_pattern = re.compile(r"https?://\S+|www\.\S+")
+        return re.search(url_pattern, statement) is not None
 
     def get_current_time(self):
         now = datetime.now()
@@ -191,47 +138,42 @@ class HelpBot:
     def access_webpage(self, url):
         try:
             response = requests.get(url)
-            if response.status_code == 200:
-                return response.text
-            else:
-                return "Failed to access the webpage."
+            response.raise_for_status()
+            return response.text
         except Exception as e:
-            print(e)
+            logging.error(f"Error accessing webpage: {e}")
             return "An error occurred while accessing the webpage."
     
-    def get_webpage_content(self, url):
-        doc = self.nlp(url)
-        if any(token.text in ['webpage', 'web', 'page'] for token in doc):
-            return self.access_webpage(url)
+    def get_webpage_content(self, statement):
+        url_pattern = re.compile(r"https?://\S+|www\.\S+")
+        url = re.search(url_pattern, statement)
+        if url:
+            return self.access_webpage(url.group(0))
         else:
-            return "I'm not sure how to help with that."
+            return "Please provide a valid URL."
 
     def get_wikipedia_summary(self, topic):
         try:
             response = requests.get(f"https://en.wikipedia.org/api/rest_v1/page/summary/{topic}")
-            if response.status_code == 200:
-                data = response.json()
-                return data.get('extract', "No summary found.")
-            else:
-                return "Failed to get the Wikipedia summary."
+            response.raise_for_status()
+            data = response.json()
+            return data.get('extract', "No summary found.")
         except Exception as e:
-            print(e)
+            logging.error(f"Error fetching Wikipedia summary: {e}")
             return "An error occurred while fetching the Wikipedia summary."
         
     def get_wikipedia_search_results(self, topic):
         try:
             response = requests.get(f"https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch={topic}&format=json")
-            if response.status_code == 200:
-                data = response.json()
-                search_results = data.get('query', {}).get('search', [])
-                if search_results:
-                    return search_results[0].get('snippet', "No search results found.")
-                else:
-                    return "No search results found."
+            response.raise_for_status()
+            data = response.json()
+            search_results = data.get('query', {}).get('search', [])
+            if search_results:
+                return search_results[0].get('snippet', "No search results found.")
             else:
-                return "Failed to get the Wikipedia search results."
+                return "No search results found."
         except Exception as e:
-            print(e)
+            logging.error(f"Error fetching Wikipedia search results: {e}")
             return "An error occurred while fetching the Wikipedia search results."
     
     def get_wikipedia_content(self, topic):
@@ -249,14 +191,25 @@ class HelpBot:
             stock_info = stock.info
             return f"Current price of {stock_info['shortName']} ({symbol}): {stock_info['currency']} {stock_info['regularMarketPrice']}"
         except Exception as e:
-            print(e)
+            logging.error(f"Error fetching stock information: {e}")
             return "An error occurred while fetching the stock information."
+        
+    def process_user_input(self, user_input):
+        tokens = nltk.word_tokenize(user_input)
+        synonyms = set()
+
+        for token in tokens:
+            for syn in wordnet.synsets(token):
+                for lemma in syn.lemmas():
+                    synonyms.add(lemma.name())
+
+        return ' '.join(synonyms)
 
     def simple_math_calculations(self, statement):
         doc = self.nlp(statement)
         numbers = [token for token in doc if token.like_num or token.text.lower() == "last"]
-        operations = [token for token in doc if token.text in ('plus', 'minus', 'times', 'divided', 'divide', '+', '-', '*', '/')]
-        
+        operations = [token for token in doc if token.text in ('plus', 'minus', 'times', 'divided', 'divide', '+', '-', '*', '/', 'x')]
+
         if len(numbers) < 2 or len(operations) < 1:
             return "Please provide a valid mathematical expression."
 
@@ -267,7 +220,7 @@ class HelpBot:
             result = numbers[0] + numbers[1]
         elif operation in ('minus', '-'):
             result = numbers[0] - numbers[1]
-        elif operation in ('times', '*'):
+        elif operation in ('times', '*', 'x'):
             result = numbers[0] * numbers[1]
         elif operation in ('divided', 'divide', '/'):
             result = numbers[0] / numbers[1]
@@ -292,56 +245,57 @@ class HelpBot:
                 word_freq[word_text] += 1
 
         max_freq = max(word_freq.values())
-        for word in word_freq:
-            word_freq[word] /= max_freq
+
+        for word in word_freq.keys():
+            word_freq[word] = word_freq[word] / max_freq
 
         sentence_scores = {}
         for sent in doc.sents:
             for word in sent:
                 word_text = word.text.lower()
-                if word_text in word_freq:
+                if word_text in word_freq.keys():
                     if sent not in sentence_scores:
                         sentence_scores[sent] = word_freq[word_text]
                     else:
                         sentence_scores[sent] += word_freq[word_text]
 
-        from heapq import nlargest
-        summarized_sentences = nlargest(3, sentence_scores, key=sentence_scores.get)
-        final_summary = ' '.join([sent.text for sent in summarized_sentences])
-        return final_summary
+        summary_sentences = heapq.nlargest(3, sentence_scores, key=sentence_scores.get)
+        summary = ' '.join([sent.text for sent in summary_sentences])
+        return summary
 
-    def advanced_summarize(self, text):
-        parser = PlaintextParser.from_string(text, Tokenizer("english"))
-        summarizer = LsaSummarizer()
-        summary = summarizer(parser.document, 3)  # Summarize the document with 3 sentences
-        return ' '.join([str(sentence) for sentence in summary])
-    
-    def transformer_summarize(self, text):
-        return self.summarization_pipeline(text, max_length=50, min_length=25, do_sample=False)[0]['summary_text']
+    def train_for_webpage_content(self, statement):
+        return self.get_webpage_content(statement)
 
-    def train_for_summary(self, text):
-        if "advanced" in text:
-            return self.advanced_summarize(text)
-        elif "transformer" in text:
-            return self.transformer_summarize(text)
+    def train_for_wikipedia(self, statement):
+        topic = statement.split("wikipedia")[-1].strip()
+        return self.get_wikipedia_content(topic)
+
+    def train_for_stock_information(self, statement):
+        symbol = self.extract_stock_symbol(statement)
+        if symbol:
+            return self.get_current_stock_information(symbol)
         else:
-            return self.summarize_information(text)
+            return "Please provide a valid stock ticker symbol."
+
+    def extract_stock_symbol(self, statement):
+        doc = self.nlp(statement)
+        for token in doc:
+            if token.text.isupper() and len(token.text) <= 5:
+                return token.text
+        return None
+
+    def train_for_dictionary(self, statement):
+        dictionary = PyDictionary()
+        word = statement.split("dictionary")[-1].strip()
+        meaning = dictionary.meaning(word)
+        if meaning:
+            return f"The meaning of {word} is: {meaning}"
+        else:
+            return f"Could not find the meaning of {word}."
     
-    def train_for_webpage_content(self, text):
-
-        return "Webpage content training is not implemented yet."
-
-    def train_for_wikipedia(self, text):
-
-        return "Wikipedia content training is not implemented yet."
-
-    def train_for_stock_information(self, text):
-        
-        return "Stock information training is not implemented yet."
-
-    def train_for_dictionary(self, text):
-
-        return "Dictionary training is not implemented yet."
+    def train_for_summary(self, statement):
+        text = statement.split("summarize")[-1].strip()
+        return self.summarize_information(text)
 
 def main():
     bot = HelpBot()
