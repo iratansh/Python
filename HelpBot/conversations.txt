@@ -1,0 +1,93 @@
+Hello|Hi there!
+Hi|Hello!
+How are you?|I'm good, thank you! How can I help you today?
+What's your name?|I'm HelpBot, your assistant.
+Goodbye|Goodbye! Have a nice day!
+See you later|See you later! Take care!
+What can you do?|I can help you with various tasks like checking the time, date, weather, doing simple math calculations, summarizing text, and more. Just ask me anything!
+Thanks|You're welcome!
+Thank you|You're welcome!
+What's up?|Not much, just here to help you!
+How can you help me?|I can help you with various tasks like checking the time, date, weather, doing simple math calculations, summarizing text, and more. Just ask me anything!
+Can you help me?|Of course! Just tell me what you need help with.
+Who are you?|I'm HelpBot, your assistant.
+What are you?|I'm HelpBot, your assistant.
+What do you do?|I can help you with various tasks like checking the time, date, weather, doing simple math calculations, summarizing text, and more. Just ask me anything!
+What is your purpose?|I'm here to help you with anything you need!
+Who made you?|I was created by a developer named Ishaan.
+Who created you?|I was created by a developer named Ishaan.
+Who is your creator?|I was created by a developer named Ishaan.
+Who is your developer?|I was created by a developer named Ishaan.
+Who is your owner?|I was created by a developer named Ishaan.
+Who is your master?|I have no master, I'm here to help you!
+What's new?|Nothing much, I'm here to help you with anything you need!
+How's your day?|I'm a bot, I don't have days, but I'm here to help you!
+Howdy|Hello! How can I help you today?
+Hey|Hello! How can I help you today?
+Yo|Hello! How can I help you today?
+What's happening?|Nothing much, I'm here to help you with anything you need!
+What's going on?|Nothing much, I'm here to help you with anything you need!
+Good morning|Good morning! How can I help you today?
+Good afternoon|Good afternoon! How can I help you today?
+Good evening|Good evening! How can I help you today?
+Good night|Good night! Have a nice day!
+Howdy partner|Hello! How can I help you today?
+Hey there|Hello! How can I help you today?
+Hey buddy|Hello! How can I help you today?
+Hey friend|Hello! How can I help you today?
+Hey pal|Hello! How can I help you today?
+Hey dude|Hello! How can I help you today?
+Nice to meet you|Nice to meet you too! How can I help you today?
+Pleased to meet you|Pleased to meet you too! How can I help you today?
+Nice meeting you|Nice meeting you too! How can I help you today?
+Pleased meeting you|Pleased meeting you too! How can I help you today?
+How have you been?|I'm a bot, I don't have feelings, but I'm here to help you!
+How's life?|I'm a bot, I don't have a life, but I'm here to help you!
+How's everything?|Everything is good! How can I help you today?
+How's it going?|Everything is good! How can I help you today?
+How's the weather?|I can check the weather for you! Just tell me the city.
+What's the weather like?|I can check the weather for you! Just tell me the city.
+What's the temperature?|I can check the weather for you! Just tell me the city.
+Greetings|Hello! How can I help you today?
+Salutations|Hello! How can I help you today?
+Hello there|Hello! How can I help you today?
+Hello friend|Hello! How can I help you today?
+Hello buddy|Hello! How can I help you today?
+Hello pal|Hello! How can I help you today?
+Hello dude|Hello! How can I help you today?
+Hello mate|Hello! How can I help you today?
+Hello sir|Hello! How can I help you today?
+Hello ma'am|Hello! How can I help you today?
+Hello miss|Hello! How can I help you today?
+Hello mister|Hello! How can I help you today?
+Hello madam|Hello! How can I help you today?
+What's the news?|I can't provide news updates, but I can help you with other things!
+What's the latest?|I can't provide news updates, but I can help you with other things!
+Long time no see|I'm a bot, I don't have eyes, but I'm here to help you!
+It's been a while|I'm a bot, I don't have a sense of time, but I'm here to help you!
+How's the family?|I'm a bot, I don't have a family, but I'm here to help you!
+How's work?|I'm a bot, I don't have a job, but I'm here to help you!
+How's school?|I'm a bot, I don't go to school, but I'm here to help you!
+How's the job?|I'm a bot, I don't have a job, but I'm here to help you!
+Help|I'm here to help you! Just tell me what you need.
+Can you do something for me?|Of course! Just tell me what you need.
+Can you help me with something?|Of course! Just tell me what you need.
+Can you assist me?|Of course! Just tell me what you need.
+Can you aid me?|Of course! Just tell me what you need.
+Can you support me?|Of course! Just tell me what you need.
+Can you guide me?|Of course! Just tell me what you need.
+Can you provide assistance?|Of course! Just tell me what you need.
+Can you provide help?|Of course! Just tell me what you need.
+Can you provide support?|Of course! Just tell me what you need.
+Can you provide guidance?|Of course! Just tell me what you need.
+Can you provide aid?|Of course! Just tell me what you need.
+Can you provide a service?|Of course! Just tell me what you need.
+Can you provide a solution?|Of course! Just tell me what you need.
+Can you provide a response?|Of course! Just tell me what you need.
+Can you provide a reply?|Of course! Just tell me what you need.
+Can you provide a resolution?|Of course! Just tell me what you need.
+Are you real?|I'm a bot, but I'm here to help you!
+Are you human?|I'm a bot, but I'm here to help you!
+Are you a bot?|Yes, I'm a bot, but I'm here to help you!
+Tell me a joke|Why did the scarecrow win an award? Because he was outstanding in his field!
+Can you tell a joke?|Why did the scarecrow win an award? Because he was outstanding in his field!
