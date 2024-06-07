@@ -1,0 +1,614 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		4618A0DC2C12A5F0004E3F26 /* Stocker_IOs_AppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4618A0DB2C12A5F0004E3F26 /* Stocker_IOs_AppApp.swift */; };
+		4618A0DE2C12A5F0004E3F26 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4618A0DD2C12A5F0004E3F26 /* ContentView.swift */; };
+		4618A0E02C12A5F3004E3F26 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4618A0DF2C12A5F3004E3F26 /* Assets.xcassets */; };
+		4618A0E42C12A5F3004E3F26 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4618A0E32C12A5F3004E3F26 /* Preview Assets.xcassets */; };
+		4618A0EE2C12A5F3004E3F26 /* Stocker_IOs_AppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4618A0ED2C12A5F3004E3F26 /* Stocker_IOs_AppTests.swift */; };
+		4618A0F82C12A5F3004E3F26 /* Stocker_IOs_AppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4618A0F72C12A5F3004E3F26 /* Stocker_IOs_AppUITests.swift */; };
+		4618A0FA2C12A5F3004E3F26 /* Stocker_IOs_AppUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4618A0F92C12A5F3004E3F26 /* Stocker_IOs_AppUITestsLaunchTests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		4618A0EA2C12A5F3004E3F26 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4618A0D02C12A5F0004E3F26 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 4618A0D72C12A5F0004E3F26;
+			remoteInfo = "Stocker IOs App";
+		};
+		4618A0F42C12A5F3004E3F26 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4618A0D02C12A5F0004E3F26 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 4618A0D72C12A5F0004E3F26;
+			remoteInfo = "Stocker IOs App";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		4618A0D82C12A5F0004E3F26 /* Stocker IOs App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Stocker IOs App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		4618A0DB2C12A5F0004E3F26 /* Stocker_IOs_AppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stocker_IOs_AppApp.swift; sourceTree = "<group>"; };
+		4618A0DD2C12A5F0004E3F26 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		4618A0DF2C12A5F3004E3F26 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		4618A0E12C12A5F3004E3F26 /* Stocker_IOs_App.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Stocker_IOs_App.entitlements; sourceTree = "<group>"; };
+		4618A0E32C12A5F3004E3F26 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		4618A0E92C12A5F3004E3F26 /* Stocker IOs AppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Stocker IOs AppTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		4618A0ED2C12A5F3004E3F26 /* Stocker_IOs_AppTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stocker_IOs_AppTests.swift; sourceTree = "<group>"; };
+		4618A0F32C12A5F3004E3F26 /* Stocker IOs AppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Stocker IOs AppUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		4618A0F72C12A5F3004E3F26 /* Stocker_IOs_AppUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stocker_IOs_AppUITests.swift; sourceTree = "<group>"; };
+		4618A0F92C12A5F3004E3F26 /* Stocker_IOs_AppUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stocker_IOs_AppUITestsLaunchTests.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		4618A0D52C12A5F0004E3F26 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4618A0E62C12A5F3004E3F26 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4618A0F02C12A5F3004E3F26 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		4618A0CF2C12A5F0004E3F26 = {
+			isa = PBXGroup;
+			children = (
+				4618A0DA2C12A5F0004E3F26 /* Stocker IOs App */,
+				4618A0EC2C12A5F3004E3F26 /* Stocker IOs AppTests */,
+				4618A0F62C12A5F3004E3F26 /* Stocker IOs AppUITests */,
+				4618A0D92C12A5F0004E3F26 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		4618A0D92C12A5F0004E3F26 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				4618A0D82C12A5F0004E3F26 /* Stocker IOs App.app */,
+				4618A0E92C12A5F3004E3F26 /* Stocker IOs AppTests.xctest */,
+				4618A0F32C12A5F3004E3F26 /* Stocker IOs AppUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		4618A0DA2C12A5F0004E3F26 /* Stocker IOs App */ = {
+			isa = PBXGroup;
+			children = (
+				4618A0DB2C12A5F0004E3F26 /* Stocker_IOs_AppApp.swift */,
+				4618A0DD2C12A5F0004E3F26 /* ContentView.swift */,
+				4618A0DF2C12A5F3004E3F26 /* Assets.xcassets */,
+				4618A0E12C12A5F3004E3F26 /* Stocker_IOs_App.entitlements */,
+				4618A0E22C12A5F3004E3F26 /* Preview Content */,
+			);
+			path = "Stocker IOs App";
+			sourceTree = "<group>";
+		};
+		4618A0E22C12A5F3004E3F26 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				4618A0E32C12A5F3004E3F26 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		4618A0EC2C12A5F3004E3F26 /* Stocker IOs AppTests */ = {
+			isa = PBXGroup;
+			children = (
+				4618A0ED2C12A5F3004E3F26 /* Stocker_IOs_AppTests.swift */,
+			);
+			path = "Stocker IOs AppTests";
+			sourceTree = "<group>";
+		};
+		4618A0F62C12A5F3004E3F26 /* Stocker IOs AppUITests */ = {
+			isa = PBXGroup;
+			children = (
+				4618A0F72C12A5F3004E3F26 /* Stocker_IOs_AppUITests.swift */,
+				4618A0F92C12A5F3004E3F26 /* Stocker_IOs_AppUITestsLaunchTests.swift */,
+			);
+			path = "Stocker IOs AppUITests";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		4618A0D72C12A5F0004E3F26 /* Stocker IOs App */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4618A0FD2C12A5F3004E3F26 /* Build configuration list for PBXNativeTarget "Stocker IOs App" */;
+			buildPhases = (
+				4618A0D42C12A5F0004E3F26 /* Sources */,
+				4618A0D52C12A5F0004E3F26 /* Frameworks */,
+				4618A0D62C12A5F0004E3F26 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Stocker IOs App";
+			productName = "Stocker IOs App";
+			productReference = 4618A0D82C12A5F0004E3F26 /* Stocker IOs App.app */;
+			productType = "com.apple.product-type.application";
+		};
+		4618A0E82C12A5F3004E3F26 /* Stocker IOs AppTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4618A1002C12A5F3004E3F26 /* Build configuration list for PBXNativeTarget "Stocker IOs AppTests" */;
+			buildPhases = (
+				4618A0E52C12A5F3004E3F26 /* Sources */,
+				4618A0E62C12A5F3004E3F26 /* Frameworks */,
+				4618A0E72C12A5F3004E3F26 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				4618A0EB2C12A5F3004E3F26 /* PBXTargetDependency */,
+			);
+			name = "Stocker IOs AppTests";
+			productName = "Stocker IOs AppTests";
+			productReference = 4618A0E92C12A5F3004E3F26 /* Stocker IOs AppTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		4618A0F22C12A5F3004E3F26 /* Stocker IOs AppUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4618A1032C12A5F3004E3F26 /* Build configuration list for PBXNativeTarget "Stocker IOs AppUITests" */;
+			buildPhases = (
+				4618A0EF2C12A5F3004E3F26 /* Sources */,
+				4618A0F02C12A5F3004E3F26 /* Frameworks */,
+				4618A0F12C12A5F3004E3F26 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				4618A0F52C12A5F3004E3F26 /* PBXTargetDependency */,
+			);
+			name = "Stocker IOs AppUITests";
+			productName = "Stocker IOs AppUITests";
+			productReference = 4618A0F32C12A5F3004E3F26 /* Stocker IOs AppUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		4618A0D02C12A5F0004E3F26 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1530;
+				LastUpgradeCheck = 1530;
+				TargetAttributes = {
+					4618A0D72C12A5F0004E3F26 = {
+						CreatedOnToolsVersion = 15.3;
+					};
+					4618A0E82C12A5F3004E3F26 = {
+						CreatedOnToolsVersion = 15.3;
+						TestTargetID = 4618A0D72C12A5F0004E3F26;
+					};
+					4618A0F22C12A5F3004E3F26 = {
+						CreatedOnToolsVersion = 15.3;
+						TestTargetID = 4618A0D72C12A5F0004E3F26;
+					};
+				};
+			};
+			buildConfigurationList = 4618A0D32C12A5F0004E3F26 /* Build configuration list for PBXProject "Stocker IOs App" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 4618A0CF2C12A5F0004E3F26;
+			productRefGroup = 4618A0D92C12A5F0004E3F26 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				4618A0D72C12A5F0004E3F26 /* Stocker IOs App */,
+				4618A0E82C12A5F3004E3F26 /* Stocker IOs AppTests */,
+				4618A0F22C12A5F3004E3F26 /* Stocker IOs AppUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		4618A0D62C12A5F0004E3F26 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4618A0E42C12A5F3004E3F26 /* Preview Assets.xcassets in Resources */,
+				4618A0E02C12A5F3004E3F26 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4618A0E72C12A5F3004E3F26 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4618A0F12C12A5F3004E3F26 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		4618A0D42C12A5F0004E3F26 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4618A0DE2C12A5F0004E3F26 /* ContentView.swift in Sources */,
+				4618A0DC2C12A5F0004E3F26 /* Stocker_IOs_AppApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4618A0E52C12A5F3004E3F26 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4618A0EE2C12A5F3004E3F26 /* Stocker_IOs_AppTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4618A0EF2C12A5F3004E3F26 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4618A0FA2C12A5F3004E3F26 /* Stocker_IOs_AppUITestsLaunchTests.swift in Sources */,
+				4618A0F82C12A5F3004E3F26 /* Stocker_IOs_AppUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		4618A0EB2C12A5F3004E3F26 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 4618A0D72C12A5F0004E3F26 /* Stocker IOs App */;
+			targetProxy = 4618A0EA2C12A5F3004E3F26 /* PBXContainerItemProxy */;
+		};
+		4618A0F52C12A5F3004E3F26 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 4618A0D72C12A5F0004E3F26 /* Stocker IOs App */;
+			targetProxy = 4618A0F42C12A5F3004E3F26 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		4618A0FB2C12A5F3004E3F26 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		4618A0FC2C12A5F3004E3F26 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		4618A0FE2C12A5F3004E3F26 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "Stocker IOs App/Stocker_IOs_App.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"Stocker IOs App/Preview Content\"";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
+				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.4;
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
+				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 14.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.StockProject.Stocker-IOs-App";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		4618A0FF2C12A5F3004E3F26 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "Stocker IOs App/Stocker_IOs_App.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"Stocker IOs App/Preview Content\"";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
+				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.4;
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
+				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 14.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.StockProject.Stocker-IOs-App";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		4618A1012C12A5F3004E3F26 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.4;
+				MACOSX_DEPLOYMENT_TARGET = 14.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.StockProject.Stocker-IOs-AppTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Stocker IOs App.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Stocker IOs App";
+			};
+			name = Debug;
+		};
+		4618A1022C12A5F3004E3F26 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.4;
+				MACOSX_DEPLOYMENT_TARGET = 14.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.StockProject.Stocker-IOs-AppTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Stocker IOs App.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Stocker IOs App";
+			};
+			name = Release;
+		};
+		4618A1042C12A5F3004E3F26 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.4;
+				MACOSX_DEPLOYMENT_TARGET = 14.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.StockProject.Stocker-IOs-AppUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = "Stocker IOs App";
+			};
+			name = Debug;
+		};
+		4618A1052C12A5F3004E3F26 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.4;
+				MACOSX_DEPLOYMENT_TARGET = 14.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.StockProject.Stocker-IOs-AppUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = "Stocker IOs App";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		4618A0D32C12A5F0004E3F26 /* Build configuration list for PBXProject "Stocker IOs App" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4618A0FB2C12A5F3004E3F26 /* Debug */,
+				4618A0FC2C12A5F3004E3F26 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		4618A0FD2C12A5F3004E3F26 /* Build configuration list for PBXNativeTarget "Stocker IOs App" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4618A0FE2C12A5F3004E3F26 /* Debug */,
+				4618A0FF2C12A5F3004E3F26 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		4618A1002C12A5F3004E3F26 /* Build configuration list for PBXNativeTarget "Stocker IOs AppTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4618A1012C12A5F3004E3F26 /* Debug */,
+				4618A1022C12A5F3004E3F26 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		4618A1032C12A5F3004E3F26 /* Build configuration list for PBXNativeTarget "Stocker IOs AppUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4618A1042C12A5F3004E3F26 /* Debug */,
+				4618A1052C12A5F3004E3F26 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 4618A0D02C12A5F0004E3F26 /* Project object */;
+}
