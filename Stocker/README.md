@@ -26,5 +26,5 @@ This project focuses on developing and implementing Time Series Forecasting algo
 * pandas: Employed for data manipulation and analysis, facilitating efficient data preprocessing.
 * Matplotlib: Used for data visualization and plotting, enabling clear representation of insights and findings.
 
-**Demonstration Images For Next.js Web App(CHECK STOCK FOLDER FOR MORE)
+**Demonstration Images For Next.js Web App(CHECK STOCK FOLDER FOR MORE)**
 <img width="1512" alt="image" src="https://github.com/iratansh/Python/assets/151393106/947ed2ff-b801-42fa-8767-619d04609d6e">
