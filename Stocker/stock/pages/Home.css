@@ -1,55 +1,75 @@
 .home {
     margin-top: 50px;
-}
-
-.header {
+  }
+  
+  .header {
     text-align: center;
-}
-
-.custom-dropdown {
+  }
+  
+  .custom-dropdown {
     width: 200px;
     height: 50px;
     text-align: center;
-}
-
-.custom-dropdown-item {
+  }
+  
+  .custom-dropdown-item {
     padding-top: 10px;
     padding-bottom: 10px;
     margin-top: 0;
     margin-bottom: 0;
-}
-
-.menu {
-   width: 200px;
-   height: 40px;
-   text-align: center;
-}
-
-.predict-button {
+  }
+  
+  .menu {
+    width: 200px;
+    height: 40px;
+    text-align: center;
+  }
+  
+  .predict-button {
     text-align: center;
     align-self: center;
     margin-top: 50px;
     margin-right: 20px;
-}
-
-.spacing-1 {
+  }
+  
+  .spacing-1 {
     margin-top: 400px;
-}
+  }
+  
+  .horizontal-line {
+    width: 100vw;  
+    height: 2px;  
+    background-color: black; 
+    margin-left: calc(-50vw + 50%);  
+  }
 
-.bottomContainer {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 15px;
+  .horizontal-line-2 {
+    width: 100vw;  
+    height: 2px;  
+    background-color: black; 
+    margin-left: calc(-25vw + 50%);  
+  }
+  
+  .spacing {
+    margin-top: 500px;
+  }
+  
+  .bottom-box {
     width: 100%;
-    margin-top: 20px; 
-}
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 300px; 
+  }
+  
+  .horizontal-line-2 {
+    margin-bottom: 20px; 
+  }
+  
+  .bottom-box-words {
+    text-align: center;
+    margin-top: 10px;
+  }
+  
 
-.box6 {
-  height: 350px;
-  width: 100vw; 
-  border-top: 2px solid black;
-  margin-left: -57vw; 
-  left: 50%;
-  position: relative;
-}
+  
