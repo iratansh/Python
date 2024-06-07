@@ -9,7 +9,6 @@ const Navbar = ({ scrollToSection }) => {
             <a href="/" className="text-xl font-bold text-gray-700">Stocker</a>
           </div>
           <div className="hidden md:flex space-x-8">
-            <button onClick={() => scrollToSection('home')} className="text-gray-700 hover:text-gray-900">Home</button>
             <button onClick={() => scrollToSection('about')} className="text-gray-700 hover:text-gray-900">About</button>
             <button onClick={() => scrollToSection('services')} className="text-gray-700 hover:text-gray-900">Services</button>
             <button onClick={() => scrollToSection('contact')} className="text-gray-700 hover:text-gray-900">Contact</button>
@@ -21,5 +20,6 @@ const Navbar = ({ scrollToSection }) => {
 };
 
 export default Navbar;
+
 
   
