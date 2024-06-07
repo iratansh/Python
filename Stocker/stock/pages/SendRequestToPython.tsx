@@ -6,32 +6,40 @@ const SendRequestToPython = ({ stock }) => {
   const [prediction, setPrediction] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [showGraph, setShowGraph] = useState(false);
+  const [stockSymbol, setStockSymbol] = useState('');
+  const [showImage, setShowImage] = useState(false);
 
   const fetchPrediction = async () => {
     setLoading(true);
     setError(null);
     setPrediction(null);
-    setShowGraph(false);
+    setShowImage(false);
 
-    let stockSymbol = stock;
+    let symbol = stock;
     if (typeof stock !== 'string') {
       if (stock instanceof Set) {
-        stockSymbol = Array.from(stock).join('');
+        symbol = Array.from(stock).join('');
+      } else if (typeof stock === 'object' && stock !== null) {
+        symbol = JSON.stringify(stock);  
+      } else {
+        symbol = String(stock);
       }
     }
 
-    console.log('Fetching prediction for stock:', stockSymbol);
+    setStockSymbol(symbol);
+    console.log('Fetching prediction for stock:', symbol);
 
     try {
-      const response = await axios.get(`http://localhost:5001/predict?stock=${encodeURIComponent(stockSymbol)}`);
+      const response = await axios.get(`http://localhost:5001/predict?stock=${encodeURIComponent(symbol)}`);
       setPrediction(response.data.prediction);
+      setLoading(false);
+      setTimeout(() => {
+        setShowImage(true);
+      }, 2000);  // Delay of 2 seconds 
     } catch (error) {
       console.error('Error fetching prediction:', error);
       setError(error.message);
-    } finally {
       setLoading(false);
-      setTimeout(() => setShowGraph(true), 1000);  // 1-second delay
     }
   };
 
@@ -43,21 +51,22 @@ const SendRequestToPython = ({ stock }) => {
 
   return (
     <div>
-      <h1 className="text-3xl font-bold mb-4 text-gray-700 header">Predicting {stock}...</h1>
-      {loading && <p className="text-gray-700">Please wait while we fetch the prediction for {stock}.</p>}
+      <h1 className="text-3xl font-bold mb-4 text-gray-700 header">Predicting {stockSymbol}...</h1>
+      {loading && <p className="text-gray-700">Please wait while we fetch the prediction for {stockSymbol}.</p>}
       {error && <p className="text-red-500">Error: {error}</p>}
-      {prediction && (
+      {prediction && !error && (
         <div>
           <h2 className="text-2xl font-bold mb-4 text-gray-700">Prediction Result</h2>
-          <p className="text-gray-700">The predicted prices for {stock} for the next 7 trading days are {prediction.join(', ')}.</p>
+          <p className="text-gray-700">The predicted prices for {stockSymbol} for the next 7 trading days are {prediction.join(', ')}.</p>
         </div>
       )}
-      {showGraph && <StockPredictionImage stock={stock} />}
+      {showImage && prediction && !error && <StockPredictionImage stock={stockSymbol} />}
     </div>
   );
 };
 
 export default SendRequestToPython;
+
 
 
 
