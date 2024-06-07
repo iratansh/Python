@@ -10,7 +10,7 @@ struct ContentView: View {
                 Color.white
                     .edgesIgnoringSafeArea(.all)
                 VStack {
-                    Spacer().frame(height: 50) // Add some space at the top
+                    Spacer().frame(height: 50)
                     
                     Text("Stocker")
                         .font(.system(size: 32, weight: .medium, design: .default))
@@ -51,11 +51,10 @@ struct ContentView: View {
                 }
             }
             
-            // Fixed Navbar at the bottom
+            // Navbar 
             HStack {
                 Spacer()
                 Button(action: {
-                    // Action for Home
                 }) {
                     VStack {
                         Image(systemName: "house")
@@ -66,7 +65,6 @@ struct ContentView: View {
                 .foregroundColor(.black)
                 Spacer()
                 Button(action: {
-                    // Action for Question
                 }) {
                     VStack {
                         Image(systemName: "questionmark.circle")
@@ -77,7 +75,6 @@ struct ContentView: View {
                 .foregroundColor(.black)
                 Spacer()
                 Button(action: {
-                    // Action for Paper
                 }) {
                     VStack {
                         Image(systemName: "doc.text")
@@ -88,7 +85,6 @@ struct ContentView: View {
                 .foregroundColor(.black)
                 Spacer()
                 Button(action: {
-                    // Action for Envelope
                 }) {
                     VStack {
                         Image(systemName: "envelope")
