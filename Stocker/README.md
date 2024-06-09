@@ -1,7 +1,7 @@
 # Stocker
 
 **Summary**
-This project focuses on developing and implementing Time Series Forecasting algorithms using machine learning techniques. By integrating real-time stock data, I aim to enhance the accuracy of stock price predictions. The key components of the project include:
+* This project focuses on developing and implementing Time Series Forecasting algorithms using machine learning techniques. By integrating real-time stock data, I aim to enhance the accuracy of stock price predictions. The key components of the project include:
 
 * Algorithms Used: XGBoost and Bayesian Neural Networks (BNN) were utilized to create the predictive models.
 * Prediction Scope: The models forecast stock prices for the upcoming seven days.
