@@ -46,7 +46,9 @@ class HelpBot:
                 conversations = [line.strip().split('|') for line in file.readlines()]
                 for conversation in conversations:
                     if len(conversation) == 2:
-                        self.trainer.train(conversation)
+                        # Convert to uppercase
+                        upper_conversation = [phrase.upper() for phrase in conversation]
+                        self.trainer.train(upper_conversation)
         except Exception as e:
             logging.error(f"Error training conversations from file: {e}")
 
@@ -113,12 +115,15 @@ class HelpBot:
         Output: response (str)
         """
         # Check for basic conversational prompts
-        response = self.help_bot.get_response(statement)
+        upper_statement = statement.upper()  # Convert user input to uppercase
+        response = self.help_bot.get_response(upper_statement)
         if response.confidence > 0.5:
             return str(response)
-        self.context.append(statement)  # Store context for future inputs
         
-        # Handle other types of inputs
+        # Store context for personalization and continuity
+        self.context.append(statement)
+        
+        # Handle other types of queries
         doc = self.nlp(statement)
         if "time" in statement.lower() and not any(token.text in ['times', 'multiply'] for token in doc):
             return self.get_current_time()
@@ -147,6 +152,7 @@ class HelpBot:
         Input: doc (spacy Doc object)
         Output: True if stock ticker is found, False otherwise
         """
+        # Use a regex to match stock ticker symbols (1-5 uppercase letters)
         ticker_pattern = re.compile(r'\b[A-Z]{1,5}\b')
         return any(ticker_pattern.match(token.text) for token in doc)
 
@@ -422,7 +428,8 @@ def main():
     bot = HelpBot()
     while True:
         statement = input("You: ")
-        if statement.lower() == "exit":
+        exit_keywords = ["exit", "bye", "quit", "stop", "end"]
+        if statement.lower() in exit_keywords:
             print("Goodbye!")
             break
         response = bot.respond_to_user(statement)
@@ -430,6 +437,8 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
 
 
 
