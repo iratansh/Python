@@ -16,6 +16,7 @@ import heapq
 import re
 import logging
 from collections import deque
+from google_trans_new import google_translator
 
 class HelpBot:
     def __init__(self):
@@ -32,11 +33,10 @@ class HelpBot:
         self.last_result = None
         self.summarization_pipeline = pipeline("summarization")
         self.generation_pipeline = pipeline("text-generation", model="gpt2")
-        self.translation_pipeline = pipeline("translation_en_to_fr")  # Add translation pipeline
-        self.question_answering_pipeline = pipeline("question-answering")  # Add question answering pipeline
         self.train_conversations_from_file('conversations.txt')
         logging.basicConfig(level=logging.INFO)
-        self.context = deque(maxlen=10)  # Keep track of context
+        self.context = deque(maxlen=10)  # Memory mechanism to keep track of context
+        self.translator = google_translator()
 
     def train_conversations_from_file(self, filename):
         """
@@ -54,6 +54,20 @@ class HelpBot:
                         self.trainer.train(upper_conversation)
         except Exception as e:
             logging.error(f"Error training conversations from file: {e}")
+
+    def access_webpage(self, url):
+        """
+        Access a webpage and return its content.
+        Input: url (str)
+        Output: Webpage content (str)
+        """
+        try:
+            response = requests.get(url)
+            response.raise_for_status()
+            return response.text
+        except Exception as e:
+            logging.error(f"Error accessing webpage: {e}")
+            return "An error occurred while accessing the webpage."
 
     def get_weather(self, city, state=None, country=None):
         """
@@ -123,7 +137,7 @@ class HelpBot:
         if response.confidence > 0.5:
             return str(response)
         
-        # Store context for future reference
+        # Store context for personalization and continuity
         self.context.append(statement)
         
         # Handle other types of queries
@@ -140,74 +154,143 @@ class HelpBot:
             return self.train_for_webpage_content(statement)
         elif "wikipedia" in statement.lower():
             return self.train_for_wikipedia(statement)
-        elif "stock" in statement.lower() or self.contains_stock_ticker(doc):
-            return self.train_for_stock_information(statement)
-        elif "dictionary" in statement.lower():
+        elif self.contains_ticker_symbol(doc):
+            ticker = self.extract_ticker_symbol(doc)
+            if ticker:
+                return self.get_ticker_information(ticker)
+        elif "define" in statement.lower() or "meaning" in statement.lower() or "definition" in statement.lower():
             return self.train_for_dictionary(statement)
         elif "summarize" in statement.lower():
             return self.train_for_summary(statement)
-        elif "complete" in statement.lower():
-            return self.train_for_completion(statement)
-        elif "paraphrase" in statement.lower():
-            return self.train_for_paraphrasing(statement)
         elif "translate" in statement.lower():
             return self.train_for_translation(statement)
-        elif "question" in statement.lower() and "answer" in statement.lower():
-            return self.train_for_question_answering(statement)
         else:
             return self.generate_response(statement)
 
-    def contains_stock_ticker(self, doc):
+    def contains_ticker_symbol(self, doc):
         """
-        Check if a statement contains a stock ticker symbol.
+        Check if a statement contains a ticker symbol.
         Input: doc (spacy Doc object)
-        Output: True if stock ticker is found, False otherwise
+        Output: True if ticker symbol is found, False otherwise
         """
         ticker_pattern = re.compile(r'\b[A-Z]{1,5}\b')
         return any(ticker_pattern.match(token.text) for token in doc)
 
-    def contains_url(self, statement):
+    def extract_ticker_symbol(self, doc):
         """
-        Check if a statement contains a URL.
-        Input: statement (str)
-        Output: True if URL is found, False otherwise
+        Extract the ticker symbol from a statement.
+        Input: doc (spacy Doc object)
+        Output: ticker symbol (str) or None
         """
-        url_pattern = re.compile(r"https?://\S+|www\.\S+")
-        return re.search(url_pattern, statement) is not None
+        ticker_pattern = re.compile(r'\b[A-Z]{1,5}\b')
+        for token in doc:
+            if ticker_pattern.match(token.text):
+                return token.text
+        return None
+
+    def get_ticker_information(self, ticker):
+        """
+        Get information for a given ticker symbol.
+        Input: ticker (str)
+        Output: Ticker information (str)
+        """
+        try:
+            stock = yf.Ticker(ticker)
+            stock_info = stock.info
+            if stock_info['quoteType'] == 'ETF':
+                return self.get_etf_information(ticker)
+            else:
+                return self.get_stock_information(ticker)
+        except Exception as e:
+            logging.error(f"Error fetching ticker information: {e}")
+            return "An error occurred while fetching the ticker information."
+
+    def get_stock_information(self, ticker):
+        """
+        Get stock information for a given ticker symbol.
+        Input: ticker (str)
+        Output: stock information (str)
+        """
+        try:
+            stock = yf.Ticker(ticker)
+            stock_info = stock.info
+            
+            stock_data = {
+                'Stock Name': stock_info.get('shortName', 'N/A'),
+                'Current Price': stock_info.get('regularMarketPrice', 'N/A'),
+                'Previous Close': stock_info.get('previousClose', 'N/A'),
+                'Open': stock_info.get('open', 'N/A'),
+                'Day Low': stock_info.get('dayLow', 'N/A'),
+                'Day High': stock_info.get('dayHigh', 'N/A'),
+                'Volume': stock_info.get('volume', 'N/A'),
+                'Market Cap': stock_info.get('marketCap', 'N/A'),
+                '52 Week Low': stock_info.get('fiftyTwoWeekLow', 'N/A'),
+                '52 Week High': stock_info.get('fiftyTwoWeekHigh', 'N/A'),
+                'Dividend Yield': stock_info.get('dividendYield', 'N/A')
+            }
+
+            return "\n".join([f"{key}: {value}" for key, value in stock_data.items()])
+        except Exception as e:
+            logging.error(f"Error fetching stock information: {e}")
+            return "An error occurred while fetching the stock information."
+
+    def get_etf_information(self, ticker):
+        """
+        Get ETF information for a given ticker symbol.
+        Input: ticker (str)
+        Output: ETF information (str)
+        """
+        try:
+            etf = yf.Ticker(ticker)
+            etf_info = etf.info
+            
+            etf_data = {
+                'ETF Name': etf_info.get('shortName', 'N/A'),
+                'Previous Close': etf_info.get('previousClose', 'N/A'),
+                'Open': etf_info.get('open', 'N/A'),
+                'Day Low': etf_info.get('dayLow', 'N/A'),
+                'Day High': etf_info.get('dayHigh', 'N/A'),
+                '52 Week Low': etf_info.get('fiftyTwoWeekLow', 'N/A'),
+                '52 Week High': etf_info.get('fiftyTwoWeekHigh', 'N/A'),
+                'Dividend Yield': etf_info.get('yield', 'N/A'),
+                'Total Assets': etf_info.get('totalAssets', 'N/A'),
+                'NAV Price': etf_info.get('navPrice', 'N/A'),
+                'YTD Return': etf_info.get('ytdReturn', 'N/A'),
+                'Fund Family': etf_info.get('fundFamily', 'N/A')
+            }
+
+            return "\n".join([f"{key}: {value}" for key, value in etf_data.items()])
+        except Exception as e:
+            logging.error(f"Error fetching ETF information: {e}")
+            return "An error occurred while fetching the ETF information."
 
     def get_current_time(self):
         """
         Get the current time.
         Input: None
-        Output: Current time (str)
+        Output: current time (str)
         """
         now = datetime.now()
-        current_time = now.strftime("%H:%M:%S")
-        return f"The current time is {current_time}."
+        return f"The current time is {now.strftime('%H:%M:%S')}."
 
     def get_current_date(self):
         """
         Get the current date.
         Input: None
-        Output: Current date (str)
+        Output: current date (str)
         """
         now = datetime.now()
-        current_date = now.strftime("%Y-%m-%d")
-        return f"The current date is {current_date}."
+        return f"Today's date is {now.strftime('%Y-%m-%d')}."
 
-    def access_webpage(self, url):
+    def contains_url(self, statement):
         """
-        Access a webpage and return its content.
-        Input: url (str)
-        Output: Webpage content (str)
+        Check if the statement contains a URL.
+        Input: statement (str)
+        Output: True if URL is found, False otherwise
         """
-        try:
-            response = requests.get(url)
-            response.raise_for_status()
-            return response.text
-        except Exception as e:
-            logging.error(f"Error accessing webpage: {e}")
-            return "An error occurred while accessing the webpage."
+        url_pattern = re.compile(r'https?://\S+|www\.\S+')
+        return re.search(url_pattern, statement) is not None
+
 
     def get_webpage_content(self, statement):
         """
@@ -221,97 +304,38 @@ class HelpBot:
             return self.access_webpage(url.group(0))
         else:
             return "Please provide a valid URL."
-
-    def get_wikipedia_summary(self, topic):
+        
+    def simple_math_calculations(self, statement):
         """
-        Get a summary of a given topic from Wikipedia.
-        Input: topic (str)
-        Output: Wikipedia summary (str)
-        """
-        try:
-            response = requests.get(f"https://en.wikipedia.org/api/rest_v1/page/summary/{topic}")
-            response.raise_for_status()
-            data = response.json()
-            return data.get('extract', "No summary found.")
-        except Exception as e:
-            logging.error(f"Error fetching Wikipedia summary: {e}")
-            return "An error occurred while fetching the Wikipedia summary."
-
-    def get_wikipedia_search_results(self, topic):
-        """
-        Get search results for a given topic from Wikipedia.
-        Input: topic (str)
-        Output: Wikipedia search results (str)
-        """
-        try:
-            response = requests.get(f"https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch={topic}&format=json")
-            response.raise_for_status()
-            data = response.json()
-            search_results = data.get('query', {}).get('search', [])
-            if search_results:
-                return search_results[0].get('snippet', "No search results found.")
-            else:
-                return "No search results found."
-        except Exception as e:
-            logging.error(f"Error fetching Wikipedia search results: {e}")
-            return "An error occurred while fetching the Wikipedia search results."
-
-    def get_summary(self, text, max_length=50):
-        """
-        Summarize the given text.
-        Input: text (str), max_length (int)
-        Output: Summary of the text (str)
-        """
-        try:
-            summary = self.summarization_pipeline(text, max_length=max_length, min_length=25, do_sample=False)
-            return summary[0]['summary_text']
-        except Exception as e:
-            logging.error(f"Error summarizing text: {e}")
-            return "An error occurred while summarizing the text."
-
-    def get_stock_information(self, ticker):
-        """
-        Get stock information for a given ticker symbol.
-        Input: ticker (str)
-        Output: Stock information (str)
-        """
-        try:
-            stock = yf.Ticker(ticker)
-            stock_info = stock.info
-            return f"Stock: {stock_info['shortName']}\nPrice: {stock_info['currentPrice']}\nMarket Cap: {stock_info['marketCap']}"
-        except Exception as e:
-            logging.error(f"Error fetching stock information: {e}")
-            return "An error occurred while fetching the stock information."
-
-    def get_dictionary_definition(self, word):
-        """
-        Get the dictionary definition of a word.
-        Input: word (str)
-        Output: Dictionary definition (str)
-        """
-        dictionary = PyDictionary()
-        try:
-            meaning = dictionary.meaning(word)
-            if meaning:
-                return "\n".join([f"{part}: {', '.join(definitions)}" for part, definitions in meaning.items()])
-            else:
-                return "No definition found."
-        except Exception as e:
-            logging.error(f"Error fetching dictionary definition: {e}")
-            return "An error occurred while fetching the dictionary definition."
-
-    def generate_response(self, statement):
-        """
-        Generate a response using a generative AI model.
+        Perform simple math calculations based on user input.
         Input: statement (str)
-        Output: Generated response (str)
+        Output: result of calculation (str)
         """
-        try:
-            generated_text = self.generation_pipeline(statement, max_length=100, num_return_sequences=1)
-            return generated_text[0]['generated_text']
-        except Exception as e:
-            logging.error(f"Error generating response: {e}")
-            return "An error occurred while generating a response."
+        # Extract numbers and operators from the statement
+        tokens = self.nlp(statement)
+        numbers = [float(token.text) for token in tokens if token.like_num]
+        operators = [token.text for token in tokens if token.text in ['plus', 'minus', 'times', 'divided', '+', '-', '*', '/', 'x']]
+
+        # Check if we have two numbers and one operator
+        if len(numbers) == 2 and len(operators) == 1:
+            num1, num2 = numbers
+            operator = operators[0]
+
+            # Perform the calculation based on the operator
+            if operator in ['plus', '+']:
+                result = num1 + num2
+            elif operator in ['minus', '-']:
+                result = num1 - num2
+            elif operator in ['times', 'x', '*']:
+                result = num1 * num2
+            elif operator in ['divided', '/']:
+                result = num1 / num2
+            else:
+                return "Invalid operator."
+            
+            return f"The result of {num1} {operator} {num2} is {result}."
+        else:
+            return "Please provide a valid mathematical expression with two numbers and one operator."
 
     def train_for_webpage_content(self, statement):
         """
@@ -333,60 +357,7 @@ class HelpBot:
             return self.get_wikipedia_summary(topic)
         else:
             return "Please provide a topic to search on Wikipedia."
-
-    def train_for_stock_information(self, statement):
-        """
-        Train the bot to provide stock information.
-        Input: statement (str)
-        Output: Stock information (str)
-        """
-        doc = self.nlp(statement)
-        ticker_pattern = re.compile(r'\b[A-Z]{1,5}\b')
-        ticker = [token.text for token in doc if ticker_pattern.match(token.text)]
-        if ticker:
-            return self.get_stock_information(ticker[0])
-        else:
-            return "Please provide a valid stock ticker symbol."
-
-    def train_for_dictionary(self, statement):
-        """
-        Train the bot to provide dictionary definitions.
-        Input: statement (str)
-        Output: Dictionary definition (str)
-        """
-        doc = self.nlp(statement)
-        word = " ".join([token.text for token in doc if token.pos_ in ['NOUN', 'VERB', 'ADJ', 'ADV']])
-        if word:
-            return self.get_dictionary_definition(word)
-        else:
-            return "Please provide a word to look up."
-
-    def train_for_summary(self, statement):
-        """
-        Train the bot to provide text summaries.
-        Input: statement (str)
-        Output: Text summary (str)
-        """
-        doc = self.nlp(statement)
-        text = " ".join([token.text for token in doc if token.pos_ in ['NOUN', 'VERB', 'ADJ', 'ADV']])
-        if text:
-            return self.get_summary(text)
-        else:
-            return "Please provide text to summarize."
-
-    def train_for_completion(self, statement):
-        """
-        Train the bot to complete a given text.
-        Input: statement (str)
-        Output: Completed text (str)
-        """
-        try:
-            completion = self.generation_pipeline(statement, max_length=100, num_return_sequences=1)
-            return completion[0]['generated_text']
-        except Exception as e:
-            logging.error(f"Error completing text: {e}")
-            return "An error occurred while completing the text."
-
+        
     def train_for_paraphrasing(self, statement):
         """
         Train the bot to paraphrase a given text.
@@ -400,19 +371,73 @@ class HelpBot:
             logging.error(f"Error paraphrasing text: {e}")
             return "An error occurred while paraphrasing the text."
 
-    def train_for_translation(self, statement):
+    def train_for_dictionary(self, statement):
         """
-        Train the bot to translate text from English to French.
+        Train the bot for dictionary queries.
         Input: statement (str)
-        Output: Translated text (str)
+        Output: response (str)
+        """
+        dictionary = PyDictionary()
+        words = statement.split()
+        if len(words) > 1:
+            word = words[1]
+            meaning = dictionary.meaning(word)
+            if meaning:
+                return f"The meaning of {word} is: {meaning}"
+            else:
+                return "Sorry, I couldn't find the meaning of that word."
+        else:
+            return "Please provide a word to look up."
+
+    def train_for_summary(self, statement):
+        """
+        Train the bot for summarization queries.
+        Input: statement (str)
+        Output: response (str)
+        """
+        # Extract the text to be summarized
+        text = statement.replace("summarize", "").strip()
+        summary = self.summarization_pipeline(text)
+        return summary[0]['summary_text']
+    
+    def train_for_completion(self, statement):
+        """
+        Train the bot to complete a given text.
+        Input: statement (str)
+        Output: Completed text (str)
         """
         try:
-            translation = self.translation_pipeline(statement)
-            return translation[0]['translation_text']
+            completion = self.generation_pipeline(statement, max_length=100, num_return_sequences=1)
+            return completion[0]['generated_text']
         except Exception as e:
-            logging.error(f"Error translating text: {e}")
-            return "An error occurred while translating the text."
+            logging.error(f"Error completing text: {e}")
+            return "An error occurred while completing the text."
 
+    def train_for_translation(self, statement):
+        """
+        Train the bot for translation queries.
+        Input: statement (str)
+        Output: response (str)
+        """
+        # Extract the text and target language
+        match = re.search(r'translate "(.*?)" to (.*)', statement, re.IGNORECASE)
+        if match:
+            text_to_translate = match.group(1)
+            target_language = match.group(2)
+            translation = self.translator.translate(text_to_translate, lang_tgt=target_language)
+            return translation
+        else:
+            return "Please provide the text to translate and the target language."
+
+    def generate_response(self, statement):
+        """
+        Generate a response using the text generation pipeline.
+        Input: statement (str)
+        Output: response (str)
+        """
+        response = self.generation_pipeline(statement, max_length=100)
+        return response[0]['generated_text']
+    
     def train_for_question_answering(self, statement):
         """
         Train the bot to answer questions based on a provided context.
