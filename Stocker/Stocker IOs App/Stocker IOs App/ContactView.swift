@@ -1,3 +1,5 @@
+// For ContactView component accessed through Navbar
+
 import SwiftUI
 
 struct ContactView: View {
