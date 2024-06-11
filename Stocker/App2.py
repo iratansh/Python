@@ -88,7 +88,7 @@ def predict():
 
     future = executor.submit(long_running_task, stock)
     try:
-        result = future.result(timeout=3600)
+        result = future.result(timeout=3600) # make timeout an hour 
         print(f'Sending response: {result}')
         return jsonify(result)
     except Exception as e:
