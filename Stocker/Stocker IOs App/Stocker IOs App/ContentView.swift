@@ -1,51 +1,25 @@
-import SwiftUI
+// Main SwiftUI app component
 
-struct LoadingView: View {
-    @State private var dotCount: Int = 1
-    
-    var body: some View {
-        VStack {
-            Text("Stocker")
-                .font(.system(size: 32, weight: .medium, design: .default))
-                .foregroundColor(.black)
-            
-            HStack(spacing: 0) {
-                Text("Loading")
-                    .font(.system(size: 18, weight: .medium, design: .default))
-                    .foregroundColor(.black)
-                Text(String(repeating: ".", count: dotCount))
-                    .font(.system(size: 18, weight: .medium, design: .default))
-                    .foregroundColor(.black)
-                    .onAppear {
-                        startLoadingAnimation()
-                    }
-            }
-        }
-    }
-    
-    private func startLoadingAnimation() {
-        Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { timer in
-            dotCount = (dotCount % 3) + 1
-        }
-    }
-}
+import SwiftUI
+import Combine
 
 struct ContentView: View {
-    @State private var isLoading: Bool = true
     @State private var selectedStock: String = "Select a stock"
     @State private var showHome: Bool = false
     @State private var showAbout: Bool = false
     @State private var showServices: Bool = false
     @State private var showContact: Bool = false
-    
+    @State private var predictionResult: [String: Any]?
+    @State private var isPredicting: Bool = false
+    @State private var isLoading: Bool = true
+
     var body: some View {
         NavigationView {
             ZStack {
-                // Main content
                 VStack {
                     if !isLoading {
                         if showHome {
-                            HomeView(selectedStock: $selectedStock)
+                            HomeView(selectedStock: $selectedStock, predictionResult: $predictionResult, isPredicting: $isPredicting, isLoading: $isLoading)
                         } else if showAbout {
                             AboutView()
                         } else if showServices {
@@ -53,12 +27,13 @@ struct ContentView: View {
                         } else if showContact {
                             ContactView()
                         } else {
-                            HomeView(selectedStock: $selectedStock)
+                            // Display HomeView by default
+                            HomeView(selectedStock: $selectedStock, predictionResult: $predictionResult, isPredicting: $isPredicting, isLoading: $isLoading)
                         }
                         
                         Spacer()
-                        
-                        // Navbar with Home, About, Services, and Contact buttons
+
+                        // Navbar
                         HStack {
                             Spacer()
                             Button(action: {
@@ -141,16 +116,35 @@ struct ContentView: View {
                         }
                     }
                 }
+                
+                // Prediction progress indicator
+                if isPredicting {
+                    ZStack {
+                        Color.black.opacity(0.5)
+                            .edgesIgnoringSafeArea(.all)
+                        ProgressView("Predicting...")
+                            .padding(20)
+                            .background(Color.white)
+                            .cornerRadius(10)
+                    }
+                }
+            }
+            .onReceive(Just(predictionResult)) { prediction in
+                if prediction != nil {
+                    // Clear everything except the Navbar when the predictions are fetched
+                    showHome = false
+                    showAbout = false
+                    showServices = false
+                    showContact = false
+                }
             }
         }
     }
 }
 
 
-
-
-
 #Preview {
     ContentView()
 }
+
 
