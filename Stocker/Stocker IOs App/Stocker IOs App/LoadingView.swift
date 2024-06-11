@@ -1,3 +1,5 @@
+// LoadingView component for adding loading screen at the launch of the app
+
 import SwiftUI
 
 struct LoadingView: View {
