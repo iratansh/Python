@@ -11,7 +11,7 @@
 
 **Frontend**:
 * Next.js: Used for developing user-friendly interfaces and dynamic web applications.
-* Swift: Utilized for developing responsive and interactive iOS applications.
+* SwiftUI: Utilized for developing responsive and interactive iOS applications.
 * TypeScript: Used for statically typed JavaScript development, enhancing code quality and maintainability.
 * TailwindCSS: Employed for efficient and customizable styling of UI components.
 
