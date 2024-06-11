@@ -23,7 +23,7 @@ Averaged Predictions
 * Weaknesses: Still shows some deviation from the actual prices but improves overall prediction accuracy.
 
 Conclusion
-The BNN model tends to underpredicts while the XGBoost model overpredicts the adjusted closing prices. Averaging the results of both models offers a more balanced prediction, yielding a closer approximation to the actual stock prices.
+The BNN model typically tends to underpredicts while the XGBoost model overpredicts the adjusted closing prices. Averaging the results of both models offers a more balanced prediction, yielding a closer approximation to the actual stock prices.
 
 <img width="1197" alt="image" src="https://github.com/iratansh/Python/assets/151393106/af1dadcb-551c-4abb-bfd9-64f337a1a061">
 
