@@ -1,3 +1,5 @@
+// ServiceView component for Navbar
+
 import SwiftUI
 
 struct ServicesView: View {
