@@ -1,3 +1,5 @@
+// For About Component accessed through Navbar
+
 import SwiftUI
 
 struct AboutView: View {
@@ -22,3 +24,4 @@ struct AboutView: View {
         }
     }
 }
+
