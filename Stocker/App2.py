@@ -1,6 +1,6 @@
 """
-App to predict stock prices using XGBoost and BNN models
-Used for SwiftUI app
+Backend App used for SwiftUI app
+Predict stock prices using XGBoost and BNN models
 """
 
 from flask import Flask, request, jsonify, send_file
