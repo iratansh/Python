@@ -1,5 +1,8 @@
 # Stocker
 
+**Note** 
+* Public folder is for the SwiftUI ios app to store the prediction images
+
 **Summary**
 * This project focuses on developing and implementing Time Series Forecasting algorithms using machine learning techniques. By integrating real-time stock data, I aim to enhance the accuracy of stock price predictions. The key components of the project include:
 
