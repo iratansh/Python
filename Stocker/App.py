@@ -1,5 +1,5 @@
 """
-Backend App 
+Backend App for Next.js Web App 
 Predicts next 7 days adj close prices using BNN and XGBoost and relays the results to the frontend
 Saves the plot for representation to the public files in frontend
 """
