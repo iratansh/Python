@@ -10,13 +10,12 @@ from chatterbot import ChatBot
 from chatterbot.trainers import ListTrainer
 import yfinance as yf
 from transformers import pipeline
-import nltk
 from nltk.corpus import wordnet
-import heapq
 import re
 import logging
 from collections import deque
 from google_trans_new import google_translator
+from MultiDataSetTrainer import MultiDatasetTrainer
 
 class HelpBot:
     def __init__(self):
@@ -35,8 +34,11 @@ class HelpBot:
         self.generation_pipeline = pipeline("text-generation", model="gpt2")
         self.train_conversations_from_file('conversations.txt')
         logging.basicConfig(level=logging.INFO)
-        self.context = deque(maxlen=10)  # Memory mechanism to keep track of context
+        self.context = deque(maxlen=10)  # Keep track of context
         self.translator = google_translator()
+        self.trainer = MultiDatasetTrainer(model_name='gpt2')
+        datasets = ['hotpotqa/hotpot_qa', "tau/commonsense_qa", "allenai/break_data"] 
+        self.trainer.train(datasets)
 
     def train_conversations_from_file(self, filename):
         """
@@ -54,6 +56,21 @@ class HelpBot:
                         self.trainer.train(upper_conversation)
         except Exception as e:
             logging.error(f"Error training conversations from file: {e}")
+
+    def load_and_train_dataset(self, filepath):
+        """
+        Load a dataset from a file and train the bot.
+        Input: filepath (str)
+        Output: None
+        """
+        try:
+            with open(filepath, 'r') as file:
+                conversations = file.readlines()
+                cleaned_conversations = [line.strip().upper() for line in conversations if line.strip()]
+                self.trainer.train(cleaned_conversations)
+                logging.info(f"Training completed with dataset from {filepath}")
+        except Exception as e:
+            logging.error(f"Error loading and training dataset: {e}")
 
     def access_webpage(self, url):
         """
@@ -228,7 +245,7 @@ class HelpBot:
                 '52 Week High': stock_info.get('fiftyTwoWeekHigh', 'N/A'),
                 'Dividend Yield': stock_info.get('dividendYield', 'N/A')
             }
-
+            
             return "\n".join([f"{key}: {value}" for key, value in stock_data.items()])
         except Exception as e:
             logging.error(f"Error fetching stock information: {e}")
@@ -243,20 +260,20 @@ class HelpBot:
         try:
             etf = yf.Ticker(ticker)
             etf_info = etf.info
-            
+
             etf_data = {
                 'ETF Name': etf_info.get('shortName', 'N/A'),
+                'Current Price': etf_info.get('regularMarketPrice', 'N/A'),
                 'Previous Close': etf_info.get('previousClose', 'N/A'),
                 'Open': etf_info.get('open', 'N/A'),
                 'Day Low': etf_info.get('dayLow', 'N/A'),
                 'Day High': etf_info.get('dayHigh', 'N/A'),
+                'Volume': etf_info.get('volume', 'N/A'),
+                'Market Cap': etf_info.get('marketCap', 'N/A'),
                 '52 Week Low': etf_info.get('fiftyTwoWeekLow', 'N/A'),
                 '52 Week High': etf_info.get('fiftyTwoWeekHigh', 'N/A'),
-                'Dividend Yield': etf_info.get('yield', 'N/A'),
-                'Total Assets': etf_info.get('totalAssets', 'N/A'),
-                'NAV Price': etf_info.get('navPrice', 'N/A'),
-                'YTD Return': etf_info.get('ytdReturn', 'N/A'),
-                'Fund Family': etf_info.get('fundFamily', 'N/A')
+                'Net Assets': etf_info.get('totalAssets', 'N/A'),
+                'Expense Ratio': etf_info.get('annualReportExpenseRatio', 'N/A')
             }
 
             return "\n".join([f"{key}: {value}" for key, value in etf_data.items()])
@@ -264,54 +281,12 @@ class HelpBot:
             logging.error(f"Error fetching ETF information: {e}")
             return "An error occurred while fetching the ETF information."
 
-    def get_current_time(self):
-        """
-        Get the current time.
-        Input: None
-        Output: current time (str)
-        """
-        now = datetime.now()
-        return f"The current time is {now.strftime('%H:%M:%S')}."
-
-    def get_current_date(self):
-        """
-        Get the current date.
-        Input: None
-        Output: current date (str)
-        """
-        now = datetime.now()
-        return f"Today's date is {now.strftime('%Y-%m-%d')}."
-
-    def contains_url(self, statement):
-        """
-        Check if the statement contains a URL.
-        Input: statement (str)
-        Output: True if URL is found, False otherwise
-        """
-        url_pattern = re.compile(r'https?://\S+|www\.\S+')
-        return re.search(url_pattern, statement) is not None
-
-
-    def get_webpage_content(self, statement):
-        """
-        Get the content of a webpage based on the URL provided in the user's statement.
-        Input: statement (str)
-        Output: Webpage content (str)
-        """
-        url_pattern = re.compile(r"https?://\S+|www\.\S+")
-        url = re.search(url_pattern, statement)
-        if url:
-            return self.access_webpage(url.group(0))
-        else:
-            return "Please provide a valid URL."
-        
     def simple_math_calculations(self, statement):
         """
-        Perform simple math calculations based on user input.
+        Perform simple math calculations based on user's input.
         Input: statement (str)
-        Output: result of calculation (str)
+        Output: calculation result (str)
         """
-        # Extract numbers and operators from the statement
         tokens = self.nlp(statement)
         numbers = [float(token.text) for token in tokens if token.like_num]
         operators = [token.text for token in tokens if token.text in ['plus', 'minus', 'times', 'divided', '+', '-', '*', '/', 'x']]
@@ -337,118 +312,118 @@ class HelpBot:
         else:
             return "Please provide a valid mathematical expression with two numbers and one operator."
 
+    def generate_response(self, statement):
+        """
+        Generate a response to the user's input using a text generation model.
+        Input: statement (str)
+        Output: generated response (str)
+        """
+        try:
+            result = self.generation_pipeline(statement, max_length=100, num_return_sequences=1)
+            return result[0]['generated_text']
+        except Exception as e:
+            logging.error(f"Error generating response: {e}")
+            return "I'm not sure how to respond to that."
+
+    def get_current_time(self):
+        """
+        Get the current time.
+        Input: None
+        Output: current time (str)
+        """
+        now = datetime.now()
+        current_time = now.strftime("%H:%M:%S")
+        return f"The current time is {current_time}"
+
+    def get_current_date(self):
+        """
+        Get the current date.
+        Input: None
+        Output: current date (str)
+        """
+        today = datetime.today()
+        current_date = today.strftime("%B %d, %Y")
+        return f"Today's date is {current_date}"
+
     def train_for_webpage_content(self, statement):
         """
-        Train the bot to provide content from a webpage.
+        Train the bot to handle requests for accessing webpage content.
         Input: statement (str)
-        Output: Webpage content (str)
+        Output: webpage content (str)
         """
-        return self.get_webpage_content(statement)
+        url = re.search("(?P<url>https?://[^\s]+)", statement).group("url")
+        if url:
+            return self.access_webpage(url)
+        else:
+            return "Please provide a valid URL."
 
     def train_for_wikipedia(self, statement):
         """
-        Train the bot to provide Wikipedia information.
+        Train the bot to handle requests for Wikipedia information.
         Input: statement (str)
-        Output: Wikipedia information (str)
-        """
-        doc = self.nlp(statement)
-        topic = " ".join([token.text for token in doc if token.pos_ in ['NOUN', 'PROPN']])
-        if topic:
-            return self.get_wikipedia_summary(topic)
-        else:
-            return "Please provide a topic to search on Wikipedia."
-        
-    def train_for_paraphrasing(self, statement):
-        """
-        Train the bot to paraphrase a given text.
-        Input: statement (str)
-        Output: Paraphrased text (str)
+        Output: Wikipedia summary (str)
         """
         try:
-            paraphrase = self.generation_pipeline(statement, max_length=100, num_return_sequences=1)
-            return paraphrase[0]['generated_text']
+            search_query = statement.lower().replace('wikipedia', '').strip()
+            summary = self.summarization_pipeline(search_query, max_length=150, min_length=30, do_sample=False)
+            return summary[0]['summary_text']
         except Exception as e:
-            logging.error(f"Error paraphrasing text: {e}")
-            return "An error occurred while paraphrasing the text."
+            logging.error(f"Error summarizing Wikipedia content: {e}")
+            return "I couldn't retrieve the Wikipedia summary."
 
     def train_for_dictionary(self, statement):
         """
-        Train the bot for dictionary queries.
+        Train the bot to handle dictionary requests.
         Input: statement (str)
-        Output: response (str)
+        Output: definition (str)
         """
-        dictionary = PyDictionary()
-        words = statement.split()
-        if len(words) > 1:
-            word = words[1]
+        try:
+            dictionary = PyDictionary()
+            word = statement.lower().replace('define', '').replace('definition', '').replace('meaning', '').strip()
             meaning = dictionary.meaning(word)
             if meaning:
-                return f"The meaning of {word} is: {meaning}"
+                return f"The definition of {word} is:\n{meaning}"
             else:
-                return "Sorry, I couldn't find the meaning of that word."
-        else:
-            return "Please provide a word to look up."
+                return f"Sorry, I couldn't find the definition of {word}."
+        except Exception as e:
+            logging.error(f"Error fetching definition: {e}")
+            return "An error occurred while fetching the definition."
 
     def train_for_summary(self, statement):
         """
-        Train the bot for summarization queries.
+        Train the bot to handle text summarization requests.
         Input: statement (str)
-        Output: response (str)
-        """
-        # Extract the text to be summarized
-        text = statement.replace("summarize", "").strip()
-        summary = self.summarization_pipeline(text)
-        return summary[0]['summary_text']
-    
-    def train_for_completion(self, statement):
-        """
-        Train the bot to complete a given text.
-        Input: statement (str)
-        Output: Completed text (str)
+        Output: summary (str)
         """
         try:
-            completion = self.generation_pipeline(statement, max_length=100, num_return_sequences=1)
-            return completion[0]['generated_text']
+            text = statement.lower().replace('summarize', '').strip()
+            summary = self.summarization_pipeline(text, max_length=150, min_length=30, do_sample=False)
+            return summary[0]['summary_text']
         except Exception as e:
-            logging.error(f"Error completing text: {e}")
-            return "An error occurred while completing the text."
+            logging.error(f"Error summarizing text: {e}")
+            return "I couldn't summarize the text."
 
     def train_for_translation(self, statement):
         """
-        Train the bot for translation queries.
+        Train the bot to handle translation requests.
         Input: statement (str)
-        Output: response (str)
+        Output: translation (str)
         """
-        # Extract the text and target language
-        match = re.search(r'translate "(.*?)" to (.*)', statement, re.IGNORECASE)
-        if match:
-            text_to_translate = match.group(1)
-            target_language = match.group(2)
+        try:
+            parts = statement.lower().replace('translate', '').strip().split('to')
+            text_to_translate = parts[0].strip()
+            target_language = parts[1].strip() if len(parts > 1) else 'en'
             translation = self.translator.translate(text_to_translate, lang_tgt=target_language)
             return translation
-        else:
-            return "Please provide the text to translate and the target language."
-
-    def generate_response(self, statement):
-        """
-        Generate a response using the text generation pipeline.
-        Input: statement (str)
-        Output: response (str)
-        """
-        response = self.generation_pipeline(statement, max_length=100)
-        return response[0]['generated_text']
-    
-    def train_for_question_answering(self, statement):
-        """
-        Train the bot to answer questions based on a provided context.
-        Input: statement (str)
-        Output: Answer to the question (str)
-        """
-        context = " ".join(self.context)
-        question = statement
-        try:
-            answer = self.question_answering_pipeline(question=question, context=context)
-            return answer['answer']
         except Exception as e:
-            logging.error(f"Error answering question: {e}")
-            return "An error occurred while answering the question."
+            logging.error(f"Error translating text: {e}")
+            return "I couldn't translate the text."
+
+    def contains_url(self, text):
+        """
+        Check if the given text contains a URL.
+        Input: text (str)
+        Output: True if URL is found, False otherwise
+        """
+        url_pattern = re.compile(r'https?://[^\s]+')
+        return url_pattern.search(text) is not None
