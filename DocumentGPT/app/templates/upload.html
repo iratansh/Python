@@ -91,9 +91,7 @@
 <body>
     
     <div class="row">
-        <!-- Left Column for Upload -->
         <div class="col-md-6">
-            <!-- Your existing upload container code here -->
             <div class="container">
                 <h1 style="margin-top: 0px;">DocumentGPT</h1>   
                 <form action="/" method="post" enctype="multipart/form-data" class="form-group">
@@ -104,11 +102,9 @@
             </div>
         </div>
 
-        <!-- Right Column for Chatbox -->
         <div class="col-md-6">
             <div class="chat-container">
                 <div id="chatbox" class="chatbox">
-                    <!-- Chat messages will appear here -->
                 </div>
                 <input type="text" id="chat-input" placeholder="Type your message...">
                 <button onclick="sendMessage()">Send</button>
@@ -136,8 +132,8 @@
             })
             .then(response => response.json())
             .then(data => {
-                console.log(data); // Check the entire response for debugging
-                const botReply = data.reply || ''; // Assuming 'reply' is the field containing the bot's response
+                console.log(data); 
+                const botReply = data.reply || ''; 
                 if (botReply !== '') {
                     // Add bot's reply to chat history
                     chatHistory += '<div class="message">Bot: ' + botReply + '</div>';
