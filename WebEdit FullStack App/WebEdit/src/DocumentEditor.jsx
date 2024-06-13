@@ -5,7 +5,7 @@ import NavigationBar from "./Navbar";
 export default function GoogleDoc() {
     return (
       <div className="google-doc">
-        <NavigationBar /> {/* Use the NavigationBar component */}
+        <NavigationBar />
         <div contentEditable="true" className="document-editor">
           Start writing your document here...
         </div>
