@@ -1,4 +1,3 @@
-/* Overlay styles */
 .overlay {
     position: fixed;
     top: 0;
@@ -8,15 +7,15 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000; /* Ensure the overlay is on top */
+    z-index: 1000; 
 }
 
 .help-menu {
-    width: 60%; /* Adjust the width as needed */
+    width: 60%; 
     background-color: #333;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    position: absolute; /* Make it draggable */
+    position: absolute; 
 }
 
 .drag-handle {
@@ -26,13 +25,13 @@
     padding: 10px;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
-    text-align: center; /* Center the header text */
+    text-align: center;
 }
 
 .header-helpmenu {
     color: white;
     font-size: 2em;
-    margin: 0; /* Remove default margin */
+    margin: 0; 
 }
 
 .content {
@@ -43,7 +42,7 @@
 .vertical-buttons {
     display: flex;
     flex-direction: column;
-    margin-right: 20px; /* Space between buttons and text content */
+    margin-right: 20px;
     margin-top: 50px;
 }
 
