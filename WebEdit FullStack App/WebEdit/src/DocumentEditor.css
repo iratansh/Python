@@ -1,4 +1,3 @@
-/* GoogleDoc.css */
 .google-doc {
     display: flex;
     flex-direction: column;
@@ -12,6 +11,6 @@
     padding: 20px;
     outline: none;
     overflow-y: auto;
-    white-space: pre-wrap; /* Preserve whitespace and wrapping */
-    margin-top: 70px; /* Adjust for Navbar height */
+    white-space: pre-wrap; 
+    margin-top: 70px; 
   }
