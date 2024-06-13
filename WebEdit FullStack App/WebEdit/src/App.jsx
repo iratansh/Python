@@ -1,12 +1,14 @@
 import { useState } from 'react'
-import './App.css'
+import NavigationBar from './Navbar'
+import AppLaunch from './AppLaunch'
 
 function App() {
   return (
+    <>
     <div className='main'>
-        <h1>WebEdit</h1>
-        <p>WebEdit is a simple web-based document editor.</p>
-    </div>
+       <AppLaunch/>
+      </div>
+    </>
   )
 }
 
