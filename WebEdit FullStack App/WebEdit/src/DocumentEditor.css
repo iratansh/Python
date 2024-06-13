@@ -1,0 +1,17 @@
+/* GoogleDoc.css */
+.google-doc {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    font-family: Arial, sans-serif;
+    background-color: white;
+  }
+  
+  .document-editor {
+    flex: 1;
+    padding: 20px;
+    outline: none;
+    overflow-y: auto;
+    white-space: pre-wrap; /* Preserve whitespace and wrapping */
+    margin-top: 70px; /* Adjust for Navbar height */
+  }

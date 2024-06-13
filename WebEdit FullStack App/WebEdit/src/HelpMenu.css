@@ -1,0 +1,103 @@
+/* Overlay styles */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Ensure the overlay is on top */
+}
+
+.help-menu {
+    width: 60%; /* Adjust the width as needed */
+    background-color: #333;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    position: absolute; /* Make it draggable */
+}
+
+.drag-handle {
+    width: 100%;
+    cursor: grab;
+    background-color: #444;
+    padding: 10px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    text-align: center; /* Center the header text */
+}
+
+.header-helpmenu {
+    color: white;
+    font-size: 2em;
+    margin: 0; /* Remove default margin */
+}
+
+.content {
+    display: flex;
+    padding: 20px;
+}
+
+.vertical-buttons {
+    display: flex;
+    flex-direction: column;
+    margin-right: 20px; /* Space between buttons and text content */
+    margin-top: 50px;
+}
+
+.side-button {
+    background-color: #242424;
+    color: white;
+    border: 1px solid white;
+    padding: 10px 20px;
+    margin: 5px 0;
+    cursor: pointer;
+}
+
+.side-button:hover {
+    background-color: white;
+    color: #242424;
+}
+
+.side-button:active {
+    background-color: white;
+    color: #242424;
+}
+
+.text-content {
+    flex: 1;
+}
+
+.text-container {
+    margin-bottom: 20px;
+}
+
+.text {
+    color: white;
+    font-size: 1.5em;
+}
+
+.button-container {
+    margin-bottom: 20px;
+}
+
+.button-exit {
+    background-color: #242424;
+    color: white;
+    border: 1px solid white;
+    padding: 10px 20px;
+    cursor: pointer;
+    margin-right: 60px;
+}
+
+.button-exit:hover {
+    background-color: red;
+    color: #242424;
+}
+
+.button-exit:active {
+    background-color: white;
+    color: #242424;
+}
