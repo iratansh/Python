@@ -1,8 +1,8 @@
 body {
   background-color: #242424;
-  margin: 0; /* Remove default margin */
-  padding: 0; /* Remove default padding */
-  overflow: hidden; /* Prevent scrolling */
+  margin: 0; 
+  padding: 0; 
+  overflow: hidden;
 }
 
 .main {
@@ -12,7 +12,7 @@ body {
 
 .header {
   font-size: 2em;
-  color: white; /* Ensure text color is white */
+  color: white;
 }
 
 .text-container {
@@ -22,7 +22,7 @@ body {
 
 .text {
   font-size: 1.5em;
-  color: white; /* Ensure text color is white */
+  color: white;
 }
 
 .button-container {
