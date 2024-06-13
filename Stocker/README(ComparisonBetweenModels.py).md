@@ -12,18 +12,18 @@ Analysis:
 
 Bayesian Neural Network (BNN)
 * Strengths: Captures broader trends and is responsive to changes in stock prices.
-* Weaknesses: Underestimates the closing prices, leading to lower predicted values compared to the actual prices.  
+* Weaknesses: Typically underestimates the closing prices, leading to lower predicted values compared to the actual prices.  
 
 XGBoost
 * Strengths: Produces conservative and more stable predictions.
-* Weaknesses: Overestimates the closing prices, resulting in a higher predicted trend compared to the actual prices.
+* Weaknesses: Typically overestimates the closing prices, resulting in a higher predicted trend compared to the actual prices.
 
 Averaged Predictions
 * Strengths: Provides a balanced approach by combining the strengths of both models, resulting in closer approximations to the actual prices.
 * Weaknesses: Still shows some deviation from the actual prices but improves overall prediction accuracy.
 
 Conclusion
-The BNN model typically tends to underpredicts while the XGBoost model overpredicts the adjusted closing prices. Averaging the results of both models offers a more balanced prediction, yielding a closer approximation to the actual stock prices.
+The BNN model typically tends to underpredict while the XGBoost model tends to overpredict the adjusted closing prices. Averaging the results of both models offers a more balanced prediction, yielding a closer approximation to the actual stock prices.
 
 <img width="1197" alt="image" src="https://github.com/iratansh/Python/assets/151393106/af1dadcb-551c-4abb-bfd9-64f337a1a061">
 
