@@ -1,0 +1,49 @@
+body {
+  background-color: #242424;
+  margin: 0; /* Remove default margin */
+  padding: 0; /* Remove default padding */
+  overflow: hidden; /* Prevent scrolling */
+}
+
+.main {
+  text-align: center;
+  margin: 50px;
+}
+
+.header {
+  font-size: 2em;
+  color: white; /* Ensure text color is white */
+}
+
+.text-container {
+  text-align: center;
+  margin: 20px;
+}
+
+.text {
+  font-size: 1.5em;
+  color: white; /* Ensure text color is white */
+}
+
+.button-container {
+  margin: 20px;
+}
+
+.button {
+  background-color: #242424;
+  color: white;
+  border: 1px solid white;
+  padding: 10px 20px;
+  margin: 10px;
+  cursor: pointer;
+}
+
+.button:hover {
+  background-color: white;
+  color: #242424;
+}
+
+.button:active {
+  background-color: #ddd;
+  color: #242424;
+}
