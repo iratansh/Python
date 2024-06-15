@@ -1,33 +1,27 @@
-from BinarySearchTree import BinarySearchTree
-from PyDictionary import PyDictionary
+import nltk
+from nltk.corpus import words
+from Trie import Trie
 
-class WordPredictor:
+class WordFinisher:
     def __init__(self):
-        self.dictionary = PyDictionary()
-        self.tree = BinarySearchTree()
-        self._build_tree()
+        self.trie = Trie()
 
-    def _build_tree(self):
-        with open('words.txt') as f:
-            for line in f:
-                word = line.strip()
-                self.tree.insert(word, None)
+    def insert_words_from_nltk(self):
+        nltk.download('words')  
+        word_list = words.words()
+        for word in word_list:
+            self.trie.insert(word.lower())
 
-    def predict(self, prefix):
-        return [node.key for node in self.tree if node.key.startswith(prefix)]
-    
-    def __contains__(self, word):
-        return word in self.tree
-    
-    def __getitem__(self, word):
-        return self.tree.search(word)
-    
-    def __setitem__(self, word, value):
-        self.tree.insert(word, value)
+    def insert_word(self, word):
+        self.trie.insert(word.lower()) 
 
-    def __len__(self):
-        return len(self.tree)
-    
-    def __str__(self):
-        return str(self.tree)
+    def predict_words(self, prefix, k=3):
+        return self.trie.search(prefix.lower(), k) 
+
+word_finisher = WordFinisher()
+word_finisher.insert_words_from_nltk()
+prefix = 'probabil'
+predictions = word_finisher.predict_words(prefix)
+print(f"Predictions for '{prefix}': {predictions}")
+
     
