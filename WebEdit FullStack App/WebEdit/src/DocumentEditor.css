@@ -1,16 +1,51 @@
 .google-doc {
     display: flex;
     flex-direction: column;
-    height: 100vh;
-    font-family: Arial, sans-serif;
-    background-color: white;
+    height: 150vh; 
+    background-color: #f1f3f4; 
   }
   
-  .document-editor {
-    flex: 1;
-    padding: 20px;
-    outline: none;
-    overflow-y: auto;
-    white-space: pre-wrap; 
-    margin-top: 70px; 
+  .document-content {
+    flex: 1; 
+    margin: 20px; 
+    padding: 20px; 
+    line-height: 1.6; 
+    font-size: 16px;
+    font-family: Arial, sans-serif;
+    color: #333; 
+    border: 1px solid #ccc; 
+    border-radius: 4px; 
+    background-color: #fff; 
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    overflow-y: auto; 
+    width: 150vh;
+    margin-left: auto;
+    margin-right: 180px;
+    margin-top: 180px;
+    margin-bottom: 40px;
   }
+  
+  .document-content:focus {
+    outline: none;
+  }
+  
+
+  .document-content {
+    border: 1px solid #ccc;
+    padding: 20px;
+    margin: 20px auto;
+    width: 80%;
+    height: 600px;
+    overflow-y: auto;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    outline: none;
+    margin-top: 60px;
+  }
+  
+  .google-doc {
+    position: relative;
+    top: 80px;
+  }
+  
+  
