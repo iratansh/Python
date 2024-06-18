@@ -5,6 +5,7 @@ import json
 import requests
 import os
 import sys
+import WordPredictor from WordPredictor
 
 app = Flask('App')
 CORS(app)
