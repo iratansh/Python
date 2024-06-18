@@ -1,27 +1,27 @@
-import nltk
-from nltk.corpus import words
-from Trie import Trie
+"""
+This module is responsible for finishing a partial word based on the prefix provided.
+"""
+
+from Trie import Trie  
 
 class WordFinisher:
     def __init__(self):
         self.trie = Trie()
+        self.trie.batch_insert_from_file() 
 
-    def insert_words_from_nltk(self):
-        nltk.download('words')  
-        word_list = words.words()
-        for word in word_list:
-            self.trie.insert(word.lower())
-
-    def insert_word(self, word):
-        self.trie.insert(word.lower()) 
-
-    def predict_words(self, prefix, k=3):
-        return self.trie.search(prefix.lower(), k) 
-
-word_finisher = WordFinisher()
-word_finisher.insert_words_from_nltk()
-prefix = 'probabil'
-predictions = word_finisher.predict_words(prefix)
-print(f"Predictions for '{prefix}': {predictions}")
+    def predict_words(self, prefix):
+        """
+        Predicts the next word based on the prefix provided.
+        Input: prefix (str) - The prefix for which the next word needs to be predicted.
+        Output: str - The predicted word.
+        """
+        try:
+            if not prefix:
+                return None
+            predictions = self.trie.search(prefix.lower())
+            return predictions[0] if predictions else None
+        except Exception as e:
+            print(f"Error: An unexpected error occurred during prediction: {e}")
+            return None
 
     
