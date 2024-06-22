@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import NestedNavbar from "./NestedNavbar";
 import HelpMenu from "./HelpMenu";
-import NavigationBar from "./Navbar"; // updated import
+import NavigationBar from "./Navbar"; 
 import "./DocumentEditor.css";
 
 export default function GoogleDoc() {
@@ -12,11 +12,11 @@ export default function GoogleDoc() {
     highlight: false,
     fontColor: false,
   });
-  const [uploadedImage, setUploadedImage] = useState(null); // State to store uploaded image data
+  const [uploadedImage, setUploadedImage] = useState(null); 
   const [docTitle, setDocTitle] = useState("Untitled Document");
   const contentEditableRef = useRef(null);
   const fileInputRef = useRef(null);
-  const [showResizeDialog, setShowResizeDialog] = useState(false); // State to manage resize dialog visibility
+  const [showResizeDialog, setShowResizeDialog] = useState(false);
   const [imageDimensions, setImageDimensions] = useState({
     width: 0,
     height: 0,
@@ -58,23 +58,22 @@ export default function GoogleDoc() {
         const img = document.createElement("img");
         img.src = e.target.result;
         img.style.maxWidth = "100%";
-        setUploadedImage(img); // Store image data in state
-        setShowResizeDialog(true); // Show resize dialog
+        setUploadedImage(img); 
+        setShowResizeDialog(true);
       };
       reader.readAsDataURL(file);
     }
   };
 
   const handleImageResize = () => {
-    // Apply resizing to the uploaded image
     if (uploadedImage) {
       uploadedImage.style.width = `${imageDimensions.width}px`;
       uploadedImage.style.height = `${imageDimensions.height}px`;
       applyCommand("insertHTML", uploadedImage.outerHTML);
     }
-    setShowResizeDialog(false); // Close resize dialog
-    setUploadedImage(null); // Clear uploaded image data
-    setImageDimensions({ width: 0, height: 0 }); // Reset image dimensions
+    setShowResizeDialog(false); 
+    setUploadedImage(null); 
+    setImageDimensions({ width: 0, height: 0 }); 
   };
 
   const handleSettingsClick = () => {
@@ -93,9 +92,9 @@ export default function GoogleDoc() {
   };
 
   const handleCancelResize = () => {
-    setShowResizeDialog(false); // Close resize dialog
-    setUploadedImage(null); // Clear uploaded image data
-    setImageDimensions({ width: 0, height: 0 }); // Reset image dimensions
+    setShowResizeDialog(false); 
+    setUploadedImage(null); 
+    setImageDimensions({ width: 0, height: 0 }); 
   };
 
   const handleDimensionChange = (event) => {
@@ -132,7 +131,7 @@ export default function GoogleDoc() {
     const blob = new Blob([content], { type: "application/pdf" });
     element.href = URL.createObjectURL(blob);
     element.download = "document.pdf";
-    document.body.appendChild(element); // Required for this to work in FireFox
+    document.body.appendChild(element);
     element.click();
     document.body.removeChild(element);
   };
