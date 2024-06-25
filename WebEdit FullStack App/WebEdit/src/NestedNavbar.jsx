@@ -6,6 +6,7 @@ import Tooltip from "react-bootstrap/Tooltip";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
+import ReactToPrint from "react-to-print";
 import {
   FaSearch,
   FaUndo,
@@ -24,7 +25,7 @@ import {
   FaSearchMinus,
 } from "react-icons/fa";
 
-const NestedNavbar = () => {
+const NestedNavbar = ({ handlePrint, printRef, contentEditableRef }) => {
   const fileInputRef = useRef(null);
   const [activeTooltip, setActiveTooltip] = useState(null);
   const [activeStyles, setActiveStyles] = useState({
@@ -239,9 +240,19 @@ const NestedNavbar = () => {
                 href="#print"
                 onMouseEnter={() => setActiveTooltip("print")}
                 onMouseLeave={hideAllTooltips}
-                onClick={(e) => handleClick(e, () => window.print())}
+                onClick={handlePrint} // Assuming handlePrint is your custom print function
               >
-                <FaPrint style={iconStyle} />
+                <ReactToPrint
+                  trigger={() => (
+                    <button
+                      style={{border: "none", backgroundColor: "transparent", cursor: "pointer"}}
+                    >
+                      <FaPrint style={iconStyle} />
+                    </button>
+                  )}
+                  content={() => contentEditableRef.current} 
+                  ref={(el) => (printRef.current = el)}
+                />
               </Nav.Link>
             </OverlayTrigger>
             <OverlayTrigger
@@ -272,135 +283,92 @@ const NestedNavbar = () => {
                 <FaSearchMinus style={iconStyle} />
               </Nav.Link>
             </OverlayTrigger>
-            <OverlayTrigger
-              placement="bottom"
-              overlay={<Tooltip id="tooltip-font">Font</Tooltip>}
-              show={activeTooltip === "font"}
+            <NavDropdown
+              title={<FaFont style={iconStyle} />}
+              onMouseEnter={() => setActiveTooltip("font")}
+              onMouseLeave={hideAllTooltips}
+              onToggle={(isOpen) => handleDropdownToggle("font", isOpen)}
             >
-              <NavDropdown
-                title={<FaFont style={iconStyle} />}
-                id="nav-dropdown-font"
-                onMouseEnter={() => setActiveTooltip("font")}
-                onMouseLeave={hideAllTooltips}
-                show={dropdownOpen.font}
-                onToggle={(isOpen) => handleDropdownToggle("font", isOpen)}
-              >
-                {[
-                  "Arial",
-                  "Courier New",
-                  "Georgia",
-                  "Times New Roman",
-                  "Verdana",
-                  "Comic Sans MS",
-                  "Impact",
-                ].map((font) => (
-                  <NavDropdown.Item
-                    key={font}
-                    onClick={() => onFontChange(font)}
-                    style={getDropdownItemStyle(selectedOptions.font === font)}
-                  >
-                    {font}
-                  </NavDropdown.Item>
-                ))}
-              </NavDropdown>
-            </OverlayTrigger>
-            <OverlayTrigger
-              placement="bottom"
-              overlay={<Tooltip id="tooltip-font-size">Font Size</Tooltip>}
-              show={activeTooltip === "font-size"}
+              {[
+                "Arial",
+                "Courier New",
+                "Georgia",
+                "Times New Roman",
+                "Verdana",
+              ].map((font) => (
+                <NavDropdown.Item
+                  key={font}
+                  onClick={() => onFontChange(font)}
+                  style={getDropdownItemStyle(selectedOptions.font === font)}
+                >
+                  {font}
+                </NavDropdown.Item>
+              ))}
+            </NavDropdown>
+            <NavDropdown
+              title={<FaTextHeight style={iconStyle} />}
+              onMouseEnter={() => setActiveTooltip("font-size")}
+              onMouseLeave={hideAllTooltips}
+              onToggle={(isOpen) => handleDropdownToggle("fontSize", isOpen)}
             >
-              <NavDropdown
-                title={<FaTextHeight style={iconStyle} />}
-                id="nav-dropdown-font-size"
-                onMouseEnter={() => setActiveTooltip("font-size")}
-                onMouseLeave={hideAllTooltips}
-                show={dropdownOpen.fontSize}
-                onToggle={(isOpen) => handleDropdownToggle("fontSize", isOpen)}
-              >
-                {[1, 2, 3, 4, 5, 6, 7].map((size) => (
-                  <NavDropdown.Item
-                    key={size}
-                    onClick={() => onFontSizeChange(size)}
-                    style={getDropdownItemStyle(
-                      selectedOptions.fontSize === size
-                    )}
-                  >
-                    {size}
-                  </NavDropdown.Item>
-                ))}
-              </NavDropdown>
-            </OverlayTrigger>
-            <OverlayTrigger
-              placement="bottom"
-              overlay={<Tooltip id="tooltip-font-color">Font Color</Tooltip>}
-              show={activeTooltip === "font-color"}
+              {[1, 2, 3, 4, 5, 6, 7].map((size) => (
+                <NavDropdown.Item
+                  key={size}
+                  onClick={() => onFontSizeChange(size)}
+                  style={getDropdownItemStyle(
+                    selectedOptions.fontSize === size
+                  )}
+                >
+                  {size}
+                </NavDropdown.Item>
+              ))}
+            </NavDropdown>
+            <NavDropdown
+              title={<FaPalette style={iconStyle} />}
+              onMouseEnter={() => setActiveTooltip("font-color")}
+              onMouseLeave={hideAllTooltips}
+              onToggle={(isOpen) => handleDropdownToggle("fontColor", isOpen)}
             >
-              <NavDropdown
-                title={<FaPalette style={iconStyle} />}
-                id="nav-dropdown-font-color"
-                onMouseEnter={() => setActiveTooltip("font-color")}
-                onMouseLeave={hideAllTooltips}
-                show={dropdownOpen.fontColor}
-                onToggle={(isOpen) =>
-                  handleDropdownToggle("fontColor", isOpen)
-                }
-              >
-                {[
-                  "red",
-                  "blue",
-                  "green",
-                  "black",
-                  "purple",
-                  "orange",
-                  "brown",
-                ].map((color) => (
-                  <NavDropdown.Item
-                    key={color}
-                    onClick={() => onFontColorChange(color)}
-                    style={getDropdownItemStyle(
-                      selectedOptions.fontColor === color
-                    )}
-                  >
-                    {color}
-                  </NavDropdown.Item>
-                ))}
-              </NavDropdown>
-            </OverlayTrigger>
-            <OverlayTrigger
-              placement="bottom"
-              overlay={<Tooltip id="tooltip-highlight">Highlight</Tooltip>}
-              show={activeTooltip === "highlight"}
+              {[
+                { name: "Black", value: "#000000" },
+                { name: "Red", value: "#ff0000" },
+                { name: "Green", value: "#00ff00" },
+                { name: "Blue", value: "#0000ff" },
+              ].map((color) => (
+                <NavDropdown.Item
+                  key={color.value}
+                  onClick={() => onFontColorChange(color.value)}
+                  style={getDropdownItemStyle(
+                    selectedOptions.fontColor === color.value
+                  )}
+                >
+                  {color.name}
+                </NavDropdown.Item>
+              ))}
+            </NavDropdown>
+            <NavDropdown
+              title={<FaHighlighter style={iconStyle} />}
+              onMouseEnter={() => setActiveTooltip("highlight")}
+              onMouseLeave={hideAllTooltips}
+              onToggle={(isOpen) => handleDropdownToggle("highlight", isOpen)}
             >
-              <NavDropdown
-                title={<FaHighlighter style={iconStyle} />}
-                id="nav-dropdown-highlight"
-                onMouseEnter={() => setActiveTooltip("highlight")}
-                onMouseLeave={hideAllTooltips}
-                show={dropdownOpen.highlight}
-                onToggle={(isOpen) =>
-                  handleDropdownToggle("highlight", isOpen)
-                }
-              >
-                {[
-                  "none",
-                  "yellow",
-                  "lightgreen",
-                  "lightblue",
-                  "lightpink",
-                  "lightgray",
-                ].map((color) => (
-                  <NavDropdown.Item
-                    key={color}
-                    onClick={() => onHighlightColorChange(color)}
-                    style={getDropdownItemStyle(
-                      selectedOptions.highlightColor === color
-                    )}
-                  >
-                    {color}
-                  </NavDropdown.Item>
-                ))}
-              </NavDropdown>
-            </OverlayTrigger>
+              {[
+                { name: "None", value: "none" },
+                { name: "Yellow", value: "#ffff00" },
+                { name: "Green", value: "#00ff00" },
+                { name: "Blue", value: "#00ffff" },
+              ].map((color) => (
+                <NavDropdown.Item
+                  key={color.value}
+                  onClick={() => onHighlightColorChange(color.value)}
+                  style={getDropdownItemStyle(
+                    selectedOptions.highlightColor === color.value
+                  )}
+                >
+                  {color.name}
+                </NavDropdown.Item>
+              ))}
+            </NavDropdown>
             <OverlayTrigger
               placement="bottom"
               overlay={<Tooltip id="tooltip-bold">Bold</Tooltip>}
@@ -435,7 +403,7 @@ const NestedNavbar = () => {
             </OverlayTrigger>
             <OverlayTrigger
               placement="bottom"
-              overlay={<Tooltip id="tooltip-image">Insert Image</Tooltip>}
+              overlay={<Tooltip id="tooltip-image">Image</Tooltip>}
               show={activeTooltip === "image"}
             >
               <Nav.Link
@@ -449,9 +417,7 @@ const NestedNavbar = () => {
             </OverlayTrigger>
             <OverlayTrigger
               placement="bottom"
-              overlay={
-                <Tooltip id="tooltip-bullets">Insert Bullet Points</Tooltip>
-              }
+              overlay={<Tooltip id="tooltip-bullets">Bullets</Tooltip>}
               show={activeTooltip === "bullets"}
             >
               <Nav.Link
@@ -465,16 +431,12 @@ const NestedNavbar = () => {
             </OverlayTrigger>
             <OverlayTrigger
               placement="bottom"
-              overlay={
-                <Tooltip id="tooltip-numbered-list">
-                  Insert Numbered List
-                </Tooltip>
-              }
-              show={activeTooltip === "numbered-list"}
+              overlay={<Tooltip id="tooltip-numbered">Numbered</Tooltip>}
+              show={activeTooltip === "numbered"}
             >
               <Nav.Link
-                href="#numbered-list"
-                onMouseEnter={() => setActiveTooltip("numbered-list")}
+                href="#numbered"
+                onMouseEnter={() => setActiveTooltip("numbered")}
                 onMouseLeave={hideAllTooltips}
                 onClick={(e) => handleClick(e, onNumberedListClick)}
               >
@@ -484,25 +446,26 @@ const NestedNavbar = () => {
           </div>
         </Nav>
       </Navbar>
-
+      <div style={{ paddingTop: "60px" }}></div>{" "}
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Insert Image</Modal.Title>
+          <Modal.Title>Upload Image</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              marginBottom: "10px",
-            }}
-          >
-            <label htmlFor="image-width" style={{ marginRight: "10px" }}>
-              Width:
-            </label>
+          <input
+            type="file"
+            ref={fileInputRef}
+            accept="image/*"
+            style={{ display: "none" }}
+          />
+          <Button onClick={() => fileInputRef.current?.click()}>
+            Select Image
+          </Button>
+          <br />
+          <label>
+            Width (px):
             <input
-              type="number"
-              id="image-width"
+              type="text"
               value={imageDimensions.width}
               onChange={(e) =>
                 setImageDimensions({
@@ -510,15 +473,13 @@ const NestedNavbar = () => {
                   width: e.target.value,
                 })
               }
-              style={{ width: "60px", marginRight: "10px" }}
-              min="1"
             />
-            <label htmlFor="image-height" style={{ marginRight: "10px" }}>
-              Height:
-            </label>
+          </label>
+          <br />
+          <label>
+            Height (px):
             <input
-              type="number"
-              id="image-height"
+              type="text"
               value={imageDimensions.height}
               onChange={(e) =>
                 setImageDimensions({
@@ -526,24 +487,13 @@ const NestedNavbar = () => {
                   height: e.target.value,
                 })
               }
-              style={{ width: "60px" }}
-              min="1"
             />
-          </div>
-          <input type="file" accept="image/*" ref={fileInputRef} />
+          </label>
+          <br />
+          <Button onClick={handleFileUpload} disabled={isUploadDisabled()}>
+            Upload
+          </Button>
         </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowModal(false)}>
-            Close
-          </Button>
-          <Button
-            variant="primary"
-            onClick={handleFileUpload}
-            disabled={isUploadDisabled()}
-          >
-            Upload Image
-          </Button>
-        </Modal.Footer>
       </Modal>
     </>
   );
