@@ -14,7 +14,7 @@ export default function GoogleDoc() {
   });
   const [uploadedImage, setUploadedImage] = useState(null);
   const [docTitle, setDocTitle] = useState("Untitled Document");
-  const contentEditableRef = useRef(null); 
+  const contentEditableRef = useRef(null);
   const fileInputRef = useRef(null);
   const [showResizeDialog, setShowResizeDialog] = useState(false);
   const [imageDimensions, setImageDimensions] = useState({
@@ -208,7 +208,7 @@ export default function GoogleDoc() {
           onZoomOutClick={handleZoomOutClick}
           onPrint={handlePrint}
           activeStyles={activeStyles}
-          contentEditableRef={contentEditableRef} // Pass the contentEditableRef
+          contentEditableRef={contentEditableRef} 
           printRef={printRef}
         />
 
@@ -263,12 +263,27 @@ export default function GoogleDoc() {
         />
         <div className="document-content">
           <div
-            contentEditable="true"
-            className="content-to-print"
             ref={contentEditableRef}
+            contentEditable
+            className="content-to-print"
             style={{
-              textAlign: "left", 
-              outline: "none", 
+              padding: "20px",
+              maxHeight: "120vh",
+              color: "#000",
+              backgroundColor: "#fff",
+              overflow: "auto",
+              fontSize: "16px",
+              fontFamily: "Arial, sans-serif",
+              textAlign: "left",
+              top: "80px",
+              outline: "none",
+            }}
+            onPaste={(event) => {
+              event.preventDefault();
+              const text = (event.clipboardData || window.clipboardData)
+                .getData("text/plain")
+                .replace(/\n/g, "<br />");
+              document.execCommand("insertHTML", false, text);
             }}
           >
             Start writing your document here...
