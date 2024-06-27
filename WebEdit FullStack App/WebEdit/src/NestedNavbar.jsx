@@ -77,12 +77,26 @@ const NestedNavbar = ({ handlePrint, printRef, contentEditableRef }) => {
     setSelectedOptions({ ...selectedOptions, fontColor: color });
   };
 
-  const onHighlightColorChange = (color) => {
+  const handleHighlightColorChange = (color) => {
+    const selection = window.getSelection();
+    if (!selection.rangeCount) return;
+
+    const range = selection.getRangeAt(0);
+    const span = document.createElement("span");
+
     if (color === "none") {
-      document.execCommand("removeFormat");
+      const fragment = range.extractContents();
+      fragment.childNodes.forEach((node) => {
+        if (node.nodeType === Node.ELEMENT_NODE) {
+          node.style.backgroundColor = "";
+        }
+      });
+      range.insertNode(fragment);
     } else {
-      document.execCommand("hiliteColor", false, color);
+      span.style.backgroundColor = color;
+      range.surroundContents(span);
     }
+
     setSelectedOptions({ ...selectedOptions, highlightColor: color });
   };
 
@@ -152,7 +166,7 @@ const NestedNavbar = ({ handlePrint, printRef, contentEditableRef }) => {
   const handleDropdownToggle = (dropdown, isOpen) => {
     setDropdownOpen({ ...dropdownOpen, [dropdown]: isOpen });
     if (isOpen) {
-      setActiveTooltip(null); // Hide all tooltips when dropdown is opened
+      setActiveTooltip(null);
     }
   };
 
@@ -245,130 +259,208 @@ const NestedNavbar = ({ handlePrint, printRef, contentEditableRef }) => {
                 <ReactToPrint
                   trigger={() => (
                     <button
-                      style={{border: "none", backgroundColor: "transparent", cursor: "pointer"}}
+                      style={{
+                        border: "none",
+                        backgroundColor: "transparent",
+                        cursor: "pointer",
+                      }}
                     >
                       <FaPrint style={iconStyle} />
                     </button>
                   )}
-                  content={() => contentEditableRef.current} 
-                  ref={(el) => (printRef.current = el)}
+                  content={() => contentEditableRef.current}
+                  pageStyle={`
+                  @media print {
+                    * {
+                      box-shadow: none !important;
+                      text-shadow: none !important;
+                      background: transparent !important;
+                      color: #000 !important;
+                      -webkit-print-color-adjust: exact;
+                    }
+
+                    p {
+                      orphans: 3;
+                      widows: 3;
+                    }
+                  }
+                  
+                  @page {
+                    size: auto;
+                    margin: 3cm;
+                  }
+                `}
                 />
-              </Nav.Link>
-            </OverlayTrigger>
-            <OverlayTrigger
-              placement="bottom"
-              overlay={<Tooltip id="tooltip-zoom-in">Zoom In</Tooltip>}
-              show={activeTooltip === "zoom-in"}
-            >
-              <Nav.Link
-                href="#zoom-in"
-                onMouseEnter={() => setActiveTooltip("zoom-in")}
-                onMouseLeave={hideAllTooltips}
-                onClick={(e) => handleClick(e, onZoomInClick)}
-              >
-                <FaSearchPlus style={iconStyle} />
-              </Nav.Link>
-            </OverlayTrigger>
-            <OverlayTrigger
-              placement="bottom"
-              overlay={<Tooltip id="tooltip-zoom-out">Zoom Out</Tooltip>}
-              show={activeTooltip === "zoom-out"}
-            >
-              <Nav.Link
-                href="#zoom-out"
-                onMouseEnter={() => setActiveTooltip("zoom-out")}
-                onMouseLeave={hideAllTooltips}
-                onClick={(e) => handleClick(e, onZoomOutClick)}
-              >
-                <FaSearchMinus style={iconStyle} />
               </Nav.Link>
             </OverlayTrigger>
             <NavDropdown
               title={<FaFont style={iconStyle} />}
+              show={dropdownOpen.font}
+              onToggle={(isOpen) => handleDropdownToggle("font", isOpen)}
               onMouseEnter={() => setActiveTooltip("font")}
               onMouseLeave={hideAllTooltips}
-              onToggle={(isOpen) => handleDropdownToggle("font", isOpen)}
             >
-              {[
-                "Arial",
-                "Courier New",
-                "Georgia",
-                "Times New Roman",
-                "Verdana",
-              ].map((font) => (
-                <NavDropdown.Item
-                  key={font}
-                  onClick={() => onFontChange(font)}
-                  style={getDropdownItemStyle(selectedOptions.font === font)}
-                >
-                  {font}
-                </NavDropdown.Item>
-              ))}
+              <NavDropdown.Item
+                style={getDropdownItemStyle(selectedOptions.font === "Arial")}
+                onClick={() => onFontChange("Arial")}
+              >
+                Arial
+              </NavDropdown.Item>
+              <NavDropdown.Item
+                style={getDropdownItemStyle(
+                  selectedOptions.font === "Times New Roman"
+                )}
+                onClick={() => onFontChange("Times New Roman")}
+              >
+                Times New Roman
+              </NavDropdown.Item>
+              <NavDropdown.Item
+                style={getDropdownItemStyle(
+                  selectedOptions.font === "Courier New"
+                )}
+                onClick={() => onFontChange("Courier New")}
+              >
+                Courier New
+              </NavDropdown.Item>
+              <NavDropdown.Divider />
             </NavDropdown>
+
             <NavDropdown
               title={<FaTextHeight style={iconStyle} />}
-              onMouseEnter={() => setActiveTooltip("font-size")}
-              onMouseLeave={hideAllTooltips}
+              show={dropdownOpen.fontSize}
               onToggle={(isOpen) => handleDropdownToggle("fontSize", isOpen)}
+              onMouseEnter={() => setActiveTooltip("fontSize")}
+              onMouseLeave={hideAllTooltips}
             >
-              {[1, 2, 3, 4, 5, 6, 7].map((size) => (
-                <NavDropdown.Item
-                  key={size}
-                  onClick={() => onFontSizeChange(size)}
-                  style={getDropdownItemStyle(
-                    selectedOptions.fontSize === size
-                  )}
-                >
-                  {size}
-                </NavDropdown.Item>
-              ))}
+              <NavDropdown.Item
+                style={getDropdownItemStyle(selectedOptions.fontSize === "1")}
+                onClick={() => onFontSizeChange("1")}
+              >
+                1 (8pt)
+              </NavDropdown.Item>
+              <NavDropdown.Item
+                style={getDropdownItemStyle(selectedOptions.fontSize === "2")}
+                onClick={() => onFontSizeChange("2")}
+              >
+                2 (10pt)
+              </NavDropdown.Item>
+              <NavDropdown.Item
+                style={getDropdownItemStyle(selectedOptions.fontSize === "3")}
+                onClick={() => onFontSizeChange("3")}
+              >
+                3 (12pt)
+              </NavDropdown.Item>
+              <NavDropdown.Item
+                style={getDropdownItemStyle(selectedOptions.fontSize === "4")}
+                onClick={() => onFontSizeChange("4")}
+              >
+                4 (14pt)
+              </NavDropdown.Item>
+              <NavDropdown.Item
+                style={getDropdownItemStyle(selectedOptions.fontSize === "5")}
+                onClick={() => onFontSizeChange("5")}
+              >
+                5 (18pt)
+              </NavDropdown.Item>
+              <NavDropdown.Item
+                style={getDropdownItemStyle(selectedOptions.fontSize === "6")}
+                onClick={() => onFontSizeChange("6")}
+              >
+                6 (24pt)
+              </NavDropdown.Item>
+              <NavDropdown.Item
+                style={getDropdownItemStyle(selectedOptions.fontSize === "7")}
+                onClick={() => onFontSizeChange("7")}
+              >
+                7 (36pt)
+              </NavDropdown.Item>
+              <NavDropdown.Divider />
             </NavDropdown>
+
             <NavDropdown
               title={<FaPalette style={iconStyle} />}
-              onMouseEnter={() => setActiveTooltip("font-color")}
-              onMouseLeave={hideAllTooltips}
+              show={dropdownOpen.fontColor}
               onToggle={(isOpen) => handleDropdownToggle("fontColor", isOpen)}
+              onMouseEnter={() => setActiveTooltip("fontColor")}
+              onMouseLeave={hideAllTooltips}
             >
-              {[
-                { name: "Black", value: "#000000" },
-                { name: "Red", value: "#ff0000" },
-                { name: "Green", value: "#00ff00" },
-                { name: "Blue", value: "#0000ff" },
-              ].map((color) => (
-                <NavDropdown.Item
-                  key={color.value}
-                  onClick={() => onFontColorChange(color.value)}
-                  style={getDropdownItemStyle(
-                    selectedOptions.fontColor === color.value
-                  )}
-                >
-                  {color.name}
-                </NavDropdown.Item>
-              ))}
+              <NavDropdown.Item
+                style={getDropdownItemStyle(
+                  selectedOptions.fontColor === "black"
+                )}
+                onClick={() => onFontColorChange("black")}
+              >
+                Black
+              </NavDropdown.Item>
+              <NavDropdown.Item
+                style={getDropdownItemStyle(
+                  selectedOptions.fontColor === "red"
+                )}
+                onClick={() => onFontColorChange("red")}
+              >
+                Red
+              </NavDropdown.Item>
+              <NavDropdown.Item
+                style={getDropdownItemStyle(
+                  selectedOptions.fontColor === "blue"
+                )}
+                onClick={() => onFontColorChange("blue")}
+              >
+                Blue
+              </NavDropdown.Item>
+              <NavDropdown.Item
+                style={getDropdownItemStyle(
+                  selectedOptions.fontColor === "green"
+                )}
+                onClick={() => onFontColorChange("green")}
+              >
+                Green
+              </NavDropdown.Item>
+              <NavDropdown.Divider />
             </NavDropdown>
+
             <NavDropdown
               title={<FaHighlighter style={iconStyle} />}
+              show={dropdownOpen.highlight}
+              onToggle={(isOpen) => handleDropdownToggle("highlight", isOpen)}
               onMouseEnter={() => setActiveTooltip("highlight")}
               onMouseLeave={hideAllTooltips}
-              onToggle={(isOpen) => handleDropdownToggle("highlight", isOpen)}
             >
-              {[
-                { name: "None", value: "none" },
-                { name: "Yellow", value: "#ffff00" },
-                { name: "Green", value: "#00ff00" },
-                { name: "Blue", value: "#00ffff" },
-              ].map((color) => (
-                <NavDropdown.Item
-                  key={color.value}
-                  onClick={() => onHighlightColorChange(color.value)}
-                  style={getDropdownItemStyle(
-                    selectedOptions.highlightColor === color.value
-                  )}
-                >
-                  {color.name}
-                </NavDropdown.Item>
-              ))}
+              <NavDropdown.Item
+                style={getDropdownItemStyle(
+                  selectedOptions.highlightColor === "yellow"
+                )}
+                onClick={() => handleHighlightColorChange("yellow")}
+              >
+                Yellow
+              </NavDropdown.Item>
+              <NavDropdown.Item
+                style={getDropdownItemStyle(
+                  selectedOptions.highlightColor === "lightblue"
+                )}
+                onClick={() => handleHighlightColorChange("lightblue")}
+              >
+                Light Blue
+              </NavDropdown.Item>
+              <NavDropdown.Item
+                style={getDropdownItemStyle(
+                  selectedOptions.highlightColor === "lightgreen"
+                )}
+                onClick={() => handleHighlightColorChange("lightgreen")}
+              >
+                Light Green
+              </NavDropdown.Item>
+              <NavDropdown.Item
+                style={getDropdownItemStyle(
+                  selectedOptions.highlightColor === "none"
+                )}
+                onClick={() => handleHighlightColorChange("none")}
+              >
+                None
+              </NavDropdown.Item>
+              <NavDropdown.Divider />
             </NavDropdown>
+
             <OverlayTrigger
               placement="bottom"
               overlay={<Tooltip id="tooltip-bold">Bold</Tooltip>}
@@ -403,12 +495,12 @@ const NestedNavbar = ({ handlePrint, printRef, contentEditableRef }) => {
             </OverlayTrigger>
             <OverlayTrigger
               placement="bottom"
-              overlay={<Tooltip id="tooltip-image">Image</Tooltip>}
-              show={activeTooltip === "image"}
+              overlay={<Tooltip id="tooltip-insertImage">Insert Image</Tooltip>}
+              show={activeTooltip === "insertImage"}
             >
               <Nav.Link
-                href="#image"
-                onMouseEnter={() => setActiveTooltip("image")}
+                href="#insertImage"
+                onMouseEnter={() => setActiveTooltip("insertImage")}
                 onMouseLeave={hideAllTooltips}
                 onClick={() => setShowModal(true)}
               >
@@ -417,12 +509,28 @@ const NestedNavbar = ({ handlePrint, printRef, contentEditableRef }) => {
             </OverlayTrigger>
             <OverlayTrigger
               placement="bottom"
-              overlay={<Tooltip id="tooltip-bullets">Bullets</Tooltip>}
-              show={activeTooltip === "bullets"}
+              overlay={<Tooltip id="tooltip-orderedList">Ordered List</Tooltip>}
+              show={activeTooltip === "orderedList"}
             >
               <Nav.Link
-                href="#bullets"
-                onMouseEnter={() => setActiveTooltip("bullets")}
+                href="#orderedList"
+                onMouseEnter={() => setActiveTooltip("orderedList")}
+                onMouseLeave={hideAllTooltips}
+                onClick={(e) => handleClick(e, onNumberedListClick)}
+              >
+                <FaListOl style={iconStyle} />
+              </Nav.Link>
+            </OverlayTrigger>
+            <OverlayTrigger
+              placement="bottom"
+              overlay={
+                <Tooltip id="tooltip-unorderedList">Unordered List</Tooltip>
+              }
+              show={activeTooltip === "unorderedList"}
+            >
+              <Nav.Link
+                href="#unorderedList"
+                onMouseEnter={() => setActiveTooltip("unorderedList")}
                 onMouseLeave={hideAllTooltips}
                 onClick={(e) => handleClick(e, onBulletPointsChange)}
               >
@@ -431,69 +539,90 @@ const NestedNavbar = ({ handlePrint, printRef, contentEditableRef }) => {
             </OverlayTrigger>
             <OverlayTrigger
               placement="bottom"
-              overlay={<Tooltip id="tooltip-numbered">Numbered</Tooltip>}
-              show={activeTooltip === "numbered"}
+              overlay={<Tooltip id="tooltip-zoomIn">Zoom In</Tooltip>}
+              show={activeTooltip === "zoomIn"}
             >
               <Nav.Link
-                href="#numbered"
-                onMouseEnter={() => setActiveTooltip("numbered")}
+                href="#zoomIn"
+                onMouseEnter={() => setActiveTooltip("zoomIn")}
                 onMouseLeave={hideAllTooltips}
-                onClick={(e) => handleClick(e, onNumberedListClick)}
+                onClick={(e) => handleClick(e, onZoomInClick)}
               >
-                <FaListOl style={iconStyle} />
+                <FaSearchPlus style={iconStyle} />
+              </Nav.Link>
+            </OverlayTrigger>
+            <OverlayTrigger
+              placement="bottom"
+              overlay={<Tooltip id="tooltip-zoomOut">Zoom Out</Tooltip>}
+              show={activeTooltip === "zoomOut"}
+            >
+              <Nav.Link
+                href="#zoomOut"
+                onMouseEnter={() => setActiveTooltip("zoomOut")}
+                onMouseLeave={hideAllTooltips}
+                onClick={(e) => handleClick(e, onZoomOutClick)}
+              >
+                <FaSearchMinus style={iconStyle} />
               </Nav.Link>
             </OverlayTrigger>
           </div>
         </Nav>
       </Navbar>
-      <div style={{ paddingTop: "60px" }}></div>{" "}
+
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Upload Image</Modal.Title>
+          <Modal.Title>Insert Image</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <input
             type="file"
             ref={fileInputRef}
             accept="image/*"
-            style={{ display: "none" }}
+            style={{ marginBottom: "10px" }}
           />
-          <Button onClick={() => fileInputRef.current?.click()}>
-            Select Image
-          </Button>
-          <br />
-          <label>
-            Width (px):
-            <input
-              type="text"
-              value={imageDimensions.width}
-              onChange={(e) =>
-                setImageDimensions({
-                  ...imageDimensions,
-                  width: e.target.value,
-                })
-              }
-            />
-          </label>
-          <br />
-          <label>
-            Height (px):
-            <input
-              type="text"
-              value={imageDimensions.height}
-              onChange={(e) =>
-                setImageDimensions({
-                  ...imageDimensions,
-                  height: e.target.value,
-                })
-              }
-            />
-          </label>
-          <br />
-          <Button onClick={handleFileUpload} disabled={isUploadDisabled()}>
-            Upload
-          </Button>
+          <div>
+            <label>
+              Width:
+              <input
+                type="text"
+                value={imageDimensions.width}
+                onChange={(e) =>
+                  setImageDimensions({
+                    ...imageDimensions,
+                    width: e.target.value,
+                  })
+                }
+                style={{ marginLeft: "10px", marginRight: "20px" }}
+              />
+            </label>
+            <label>
+              Height:
+              <input
+                type="text"
+                value={imageDimensions.height}
+                onChange={(e) =>
+                  setImageDimensions({
+                    ...imageDimensions,
+                    height: e.target.value,
+                  })
+                }
+                style={{ marginLeft: "10px" }}
+              />
+            </label>
+          </div>
         </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowModal(false)}>
+            Close
+          </Button>
+          <Button
+            variant="primary"
+            onClick={handleFileUpload}
+            disabled={isUploadDisabled()}
+          >
+            Upload Image
+          </Button>
+        </Modal.Footer>
       </Modal>
     </>
   );
