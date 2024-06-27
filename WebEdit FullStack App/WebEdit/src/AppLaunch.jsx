@@ -7,7 +7,7 @@ export default function AppLaunch() {
 
   const handleContinue = () => {
     setIsGoogleDocVisible(true);
-    document.body.style.backgroundColor = "white"; // Change background color to white
+    document.body.style.backgroundColor = "white";
   };
 
   if (isGoogleDocVisible) {
