@@ -3,8 +3,10 @@ import "./HelpMenu.css";
 
 export default function HelpMenu({ handleContinue }) {
   const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [helpText, setHelpText] = useState(
+    "Here you can find information on how to use WebEdit."
+  );
   const [isDragging, setIsDragging] = useState(false);
-  const [helpText, setHelpText] = useState("Here you can find information on how to use WebEdit.");
   const helpMenuRef = useRef(null);
   const dragHandleRef = useRef(null);
 
@@ -34,17 +36,22 @@ export default function HelpMenu({ handleContinue }) {
   };
 
   const handleUploadClick = () => {
-    setHelpText("To upload .pdf or .txt files, click the downward arrow button on the navbar above.");
+    setHelpText(
+      "To upload .docx or .txt files, click the file drop down menu and then the upload button."
+    );
   };
 
   const handleSavingClick = () => {
-    setHelpText("To save your work, click the save button on the navbar above.");
-  }
+    setHelpText(
+      "To save your work, click on the file drop down menu and then the save button."
+    );
+  };
 
   const handleFeaturesClick = () => {
-    setHelpText("WebEdit is a simple web-based document creation and editing tool. Features include uploading, saving, word prediction, and text customization and formatting.");
-  }
-    
+    setHelpText(
+      "WebEdit is a simple web-based document creation and editing tool. Key features include uploading, saving, word prediction, and text customization and formatting."
+    );
+  };
 
   return (
     <div
@@ -64,11 +71,16 @@ export default function HelpMenu({ handleContinue }) {
         </div>
         <div className="content">
           <div className="vertical-buttons">
-            <button className="side-button" onClick={ handleUploadClick }>Uploading</button>
-            <button className="side-button" onClick={ handleSavingClick }>Saving</button>
-            <button className="side-button" onClick={ handleFeaturesClick }>Features</button>
-            <button className="side-button">Button 4</button>
-            <button className="side-button">Button 5</button>
+            <button className="side-button" onClick={handleUploadClick}>
+              Uploading
+            </button>
+            <button className="side-button" onClick={handleSavingClick}>
+              Saving
+            </button>
+            <button className="side-button" onClick={handleFeaturesClick}>
+              Features
+            </button>
+            <button className="side-button">Open Settings</button>
           </div>
           <div className="text-content">
             <div className="text-container">
