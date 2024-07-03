@@ -25,7 +25,7 @@ import {
   FaSearchMinus,
 } from "react-icons/fa";
 
-const NestedNavbar = ({ handlePrint, printRef, contentEditableRef }) => {
+const NestedNavbar = ({ handlePrint, contentEditableRef }) => {
   const fileInputRef = useRef(null);
   const [activeTooltip, setActiveTooltip] = useState(null);
   const [activeStyles, setActiveStyles] = useState({
@@ -55,7 +55,7 @@ const NestedNavbar = ({ handlePrint, printRef, contentEditableRef }) => {
   };
 
   const iconStyle = { fontSize: "20px", verticalAlign: "middle" };
-  const activeIconStyle = { ...iconStyle, border: "1px solid black" };
+  const activeIconStyle = { ...iconStyle, fontSize: "24px" };
 
   const handleClick = (event, handler) => {
     event.preventDefault();
@@ -80,23 +80,22 @@ const NestedNavbar = ({ handlePrint, printRef, contentEditableRef }) => {
   const handleHighlightColorChange = (color) => {
     const selection = window.getSelection();
     if (!selection.rangeCount) return;
-
+  
     const range = selection.getRangeAt(0);
     const span = document.createElement("span");
-
+  
     if (color === "none") {
-      const fragment = range.extractContents();
-      fragment.childNodes.forEach((node) => {
-        if (node.nodeType === Node.ELEMENT_NODE) {
-          node.style.backgroundColor = "";
-        }
-      });
-      range.insertNode(fragment);
+      // Find the parent element to restore the text without highlight
+      const parentElement = range.startContainer.parentElement;
+      if (parentElement.nodeName === "SPAN" && parentElement.style.backgroundColor) {
+        const text = parentElement.innerText;
+        parentElement.replaceWith(document.createTextNode(text));
+      }
     } else {
       span.style.backgroundColor = color;
       range.surroundContents(span);
     }
-
+  
     setSelectedOptions({ ...selectedOptions, highlightColor: color });
   };
 
@@ -254,7 +253,7 @@ const NestedNavbar = ({ handlePrint, printRef, contentEditableRef }) => {
                 href="#print"
                 onMouseEnter={() => setActiveTooltip("print")}
                 onMouseLeave={hideAllTooltips}
-                onClick={handlePrint} // Assuming handlePrint is your custom print function
+                onClick={handlePrint}
               >
                 <ReactToPrint
                   trigger={() => (
@@ -293,6 +292,7 @@ const NestedNavbar = ({ handlePrint, printRef, contentEditableRef }) => {
                 />
               </Nav.Link>
             </OverlayTrigger>
+            <span>|</span>
             <NavDropdown
               title={<FaFont style={iconStyle} />}
               show={dropdownOpen.font}
@@ -301,28 +301,75 @@ const NestedNavbar = ({ handlePrint, printRef, contentEditableRef }) => {
               onMouseLeave={hideAllTooltips}
             >
               <NavDropdown.Item
-                style={getDropdownItemStyle(selectedOptions.font === "Arial")}
                 onClick={() => onFontChange("Arial")}
+                style={getDropdownItemStyle(selectedOptions.font === "Arial")}
               >
                 Arial
               </NavDropdown.Item>
               <NavDropdown.Item
+                onClick={() => onFontChange("Times New Roman")}
                 style={getDropdownItemStyle(
                   selectedOptions.font === "Times New Roman"
                 )}
-                onClick={() => onFontChange("Times New Roman")}
               >
                 Times New Roman
               </NavDropdown.Item>
               <NavDropdown.Item
+                onClick={() => onFontChange("Courier New")}
                 style={getDropdownItemStyle(
                   selectedOptions.font === "Courier New"
                 )}
-                onClick={() => onFontChange("Courier New")}
               >
                 Courier New
               </NavDropdown.Item>
-              <NavDropdown.Divider />
+              <NavDropdown.Item
+                onClick={() => onFontChange("Georgia")}
+                style={getDropdownItemStyle(selectedOptions.font === "Georgia")}
+              >
+                Georgia
+              </NavDropdown.Item>
+              <NavDropdown.Item
+                onClick={() => onFontChange("Verdana")}
+                style={getDropdownItemStyle(selectedOptions.font === "Verdana")}
+              >
+                Verdana
+              </NavDropdown.Item>
+              <NavDropdown.Item
+                onClick={() => onFontChange("Tahoma")}
+                style={getDropdownItemStyle(selectedOptions.font === "Tahoma")}
+              >
+                Tahoma
+              </NavDropdown.Item>
+              <NavDropdown.Item
+                onClick={() => onFontChange("Helvetica")}
+                style={getDropdownItemStyle(
+                  selectedOptions.font === "Helvetica"
+                )}
+              >
+                Helvetica
+              </NavDropdown.Item>
+              <NavDropdown.Item
+                onClick={() => onFontChange("Garamond")}
+                style={getDropdownItemStyle(
+                  selectedOptions.font === "Garamond"
+                )}
+              >
+                Garamond
+              </NavDropdown.Item>
+              <NavDropdown.Item
+                onClick={() => onFontChange("Impact")}
+                style={getDropdownItemStyle(selectedOptions.font === "Impact")}
+              >
+                Impact
+              </NavDropdown.Item>
+              <NavDropdown.Item
+                onClick={() => onFontChange("Comic Sans MS")}
+                style={getDropdownItemStyle(
+                  selectedOptions.font === "Comic Sans MS"
+                )}
+              >
+                Comic Sans MS
+              </NavDropdown.Item>
             </NavDropdown>
 
             <NavDropdown
@@ -385,38 +432,77 @@ const NestedNavbar = ({ handlePrint, printRef, contentEditableRef }) => {
               onMouseLeave={hideAllTooltips}
             >
               <NavDropdown.Item
+                onClick={() => onFontColorChange("black")}
                 style={getDropdownItemStyle(
                   selectedOptions.fontColor === "black"
                 )}
-                onClick={() => onFontColorChange("black")}
               >
                 Black
               </NavDropdown.Item>
               <NavDropdown.Item
+                onClick={() => onFontColorChange("red")}
                 style={getDropdownItemStyle(
                   selectedOptions.fontColor === "red"
                 )}
-                onClick={() => onFontColorChange("red")}
               >
                 Red
               </NavDropdown.Item>
               <NavDropdown.Item
+                onClick={() => onFontColorChange("blue")}
                 style={getDropdownItemStyle(
                   selectedOptions.fontColor === "blue"
                 )}
-                onClick={() => onFontColorChange("blue")}
               >
                 Blue
               </NavDropdown.Item>
               <NavDropdown.Item
+                onClick={() => onFontColorChange("green")}
                 style={getDropdownItemStyle(
                   selectedOptions.fontColor === "green"
                 )}
-                onClick={() => onFontColorChange("green")}
               >
                 Green
               </NavDropdown.Item>
-              <NavDropdown.Divider />
+              <NavDropdown.Item
+                onClick={() => onFontColorChange("orange")}
+                style={getDropdownItemStyle(
+                  selectedOptions.fontColor === "orange"
+                )}
+              >
+                Orange
+              </NavDropdown.Item>
+              <NavDropdown.Item
+                onClick={() => onFontColorChange("purple")}
+                style={getDropdownItemStyle(
+                  selectedOptions.fontColor === "purple"
+                )}
+              >
+                Purple
+              </NavDropdown.Item>
+              <NavDropdown.Item
+                onClick={() => onFontColorChange("brown")}
+                style={getDropdownItemStyle(
+                  selectedOptions.fontColor === "brown"
+                )}
+              >
+                Brown
+              </NavDropdown.Item>
+              <NavDropdown.Item
+                onClick={() => onFontColorChange("gray")}
+                style={getDropdownItemStyle(
+                  selectedOptions.fontColor === "gray"
+                )}
+              >
+                Gray
+              </NavDropdown.Item>
+              <NavDropdown.Item
+                onClick={() => onFontColorChange("pink")}
+                style={getDropdownItemStyle(
+                  selectedOptions.fontColor === "pink"
+                )}
+              >
+                Pink
+              </NavDropdown.Item>
             </NavDropdown>
 
             <NavDropdown
@@ -427,38 +513,87 @@ const NestedNavbar = ({ handlePrint, printRef, contentEditableRef }) => {
               onMouseLeave={hideAllTooltips}
             >
               <NavDropdown.Item
+                onClick={() => handleHighlightColorChange("yellow")}
                 style={getDropdownItemStyle(
                   selectedOptions.highlightColor === "yellow"
                 )}
-                onClick={() => handleHighlightColorChange("yellow")}
               >
                 Yellow
               </NavDropdown.Item>
               <NavDropdown.Item
+                onClick={() => handleHighlightColorChange("lightblue")}
                 style={getDropdownItemStyle(
                   selectedOptions.highlightColor === "lightblue"
                 )}
-                onClick={() => handleHighlightColorChange("lightblue")}
               >
                 Light Blue
               </NavDropdown.Item>
               <NavDropdown.Item
+                onClick={() => handleHighlightColorChange("lightgreen")}
                 style={getDropdownItemStyle(
                   selectedOptions.highlightColor === "lightgreen"
                 )}
-                onClick={() => handleHighlightColorChange("lightgreen")}
               >
                 Light Green
               </NavDropdown.Item>
               <NavDropdown.Item
+                onClick={() => handleHighlightColorChange("lightpink")}
+                style={getDropdownItemStyle(
+                  selectedOptions.highlightColor === "lightpink"
+                )}
+              >
+                Light Pink
+              </NavDropdown.Item>
+              <NavDropdown.Item
+                onClick={() => handleHighlightColorChange("lightgray")}
+                style={getDropdownItemStyle(
+                  selectedOptions.highlightColor === "lightgray"
+                )}
+              >
+                Light Gray
+              </NavDropdown.Item>
+              <NavDropdown.Item
+                onClick={() => handleHighlightColorChange("lightcoral")}
+                style={getDropdownItemStyle(
+                  selectedOptions.highlightColor === "lightcoral"
+                )}
+              >
+                Light Coral
+              </NavDropdown.Item>
+              <NavDropdown.Item
+                onClick={() =>
+                  handleHighlightColorChange("lightgoldenrodyellow")
+                }
+                style={getDropdownItemStyle(
+                  selectedOptions.highlightColor === "lightgoldenrodyellow"
+                )}
+              >
+                Light Goldenrod Yellow
+              </NavDropdown.Item>
+              <NavDropdown.Item
+                onClick={() => handleHighlightColorChange("lightsalmon")}
+                style={getDropdownItemStyle(
+                  selectedOptions.highlightColor === "lightsalmon"
+                )}
+              >
+                Light Salmon
+              </NavDropdown.Item>
+              <NavDropdown.Item
+                onClick={() => handleHighlightColorChange("lightseagreen")}
+                style={getDropdownItemStyle(
+                  selectedOptions.highlightColor === "lightseagreen"
+                )}
+              >
+                Light Sea Green
+              </NavDropdown.Item>
+              <NavDropdown.Item
+                onClick={() => handleHighlightColorChange("none")}
                 style={getDropdownItemStyle(
                   selectedOptions.highlightColor === "none"
                 )}
-                onClick={() => handleHighlightColorChange("none")}
               >
                 None
               </NavDropdown.Item>
-              <NavDropdown.Divider />
             </NavDropdown>
 
             <OverlayTrigger
@@ -493,6 +628,7 @@ const NestedNavbar = ({ handlePrint, printRef, contentEditableRef }) => {
                 />
               </Nav.Link>
             </OverlayTrigger>
+            <span>|</span>
             <OverlayTrigger
               placement="bottom"
               overlay={<Tooltip id="tooltip-insertImage">Insert Image</Tooltip>}
@@ -537,6 +673,7 @@ const NestedNavbar = ({ handlePrint, printRef, contentEditableRef }) => {
                 <FaListUl style={iconStyle} />
               </Nav.Link>
             </OverlayTrigger>
+            <span>|</span>
             <OverlayTrigger
               placement="bottom"
               overlay={<Tooltip id="tooltip-zoomIn">Zoom In</Tooltip>}
