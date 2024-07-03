@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 
 const Settings = ({ show, handleClose, settings, onChange }) => {
-
   const handleToggle = (setting) => {
     onChange({
       ...settings,
@@ -21,6 +20,7 @@ const Settings = ({ show, handleClose, settings, onChange }) => {
             <Form.Label>AutoComplete</Form.Label>
             <Form.Check
               type="switch"
+              id="autoCompleteSwitch"
               checked={settings.autoComplete}
               onChange={() => handleToggle('autoComplete')}
             />
@@ -30,11 +30,11 @@ const Settings = ({ show, handleClose, settings, onChange }) => {
             <Form.Label>Dark Mode</Form.Label>
             <Form.Check
               type="switch"
+              id="darkModeSwitch"
               checked={settings.darkMode}
               onChange={() => handleToggle('darkMode')}
             />
           </Form.Group>
-
         </Form>
       </Modal.Body>
       <Modal.Footer>
